@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency "railties", [">= 3.2.5", "< 6"]
   s.add_dependency "graphql", ">= 1.8.5"
   s.add_dependency "graphql-errors", ">= 0.2.0"
+  s.add_dependency "graphiql-rails", ">= 1.4.11"
   s.add_dependency "warden", ">= 1.2.7"
   s.add_dependency "bcrypt", ">= 3.1.12"
 end

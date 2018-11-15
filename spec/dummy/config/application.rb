@@ -33,13 +33,16 @@ module Dummy
   end
 end
 
-class ApplicationController < ActionController::Base
-  def welcome
-    render plain: "welcome", layout: false
+class RootController < ActionController::Base
+  helper Webpacker::Helper
+  prepend_view_path(Rails.root.join("public"))
+
+  def app
+    render template: "app"
   end
 end
 
 Rails.application.initialize! unless Rails.application.instance_variable_get(:"@initialized")
 Rails.application.routes.draw do
-  match "/(*path)", to: "application#welcome", via: [:get, :put, :post, :delete]
+  get "/(*path)", to: "root#app", constraints: Proc.new { |req| req.format == :html }
 end

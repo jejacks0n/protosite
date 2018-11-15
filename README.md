@@ -11,7 +11,7 @@ The API layer is built with Rails and GraphQL.
 
 ## Installation
 
-### Client Layer 
+### Client Layer
 
 Add it to your `package.json` using yarn or npm.
 
@@ -67,3 +67,10 @@ TODO: document this.
 ### API Layer
 
 There's not a whole lot to document at this point. If you want to override things you can fairly easily. Have at it!
+
+## Development
+
+To get things setup for development you need to link the node package. You can do this all from the project root.
+
+- npm link
+- npm link @legwork/vue-protosite

@@ -1,0 +1,10 @@
+plugins:
+  postcss-import: {}
+  postcss-cssnext: {
+    features: {
+      customProperties: {
+        globalWarnings: false,
+        warnings: false,
+      },
+    }
+  }

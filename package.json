@@ -5,7 +5,9 @@
   "description": "Protosite: An elegant and customizable vue based CMA",
   "license": "MIT",
   "main": "src/vue-protosite/index.js",
-  "files": ["src/**/*"],
+  "files": [
+    "src/**/*"
+  ],
   "dependencies": {
     "@rails/webpacker": "3.5",
     "@formschema/native": "^2.0.0-alpha.2",
@@ -13,7 +15,15 @@
     "vue-headful": "^2.0.1"
   },
   "devDependencies": {
+    "webpack-dev-server": "2.11.2",
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.7.0"
+    "eslint": "^5.7.0",
+    "vue": "^2.5.17",
+    "vue-loader": "14.2.2",
+    "vue-style-loader": "4.1.2",
+    "vue-router": "^3.0.1",
+    "vue-template-compiler": "^2.5.17",
+    "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.5.4"
   }
 }

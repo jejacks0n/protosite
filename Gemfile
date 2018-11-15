@@ -10,7 +10,13 @@ group :development, :test do
   gem "rubocop-rails_config"
 
   # tests / dummy app
-  gem "graphiql-rails"
+  gem "puma", "~> 3.11"
   gem "sqlite3"
+  gem "slim-rails"
+  gem "sassc-rails"
+  gem "webpacker"
+  gem "uglifier"
+  gem "foreman", require: false
+
   gem "rspec-rails"
 end

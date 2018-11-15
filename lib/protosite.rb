@@ -1,5 +1,6 @@
 require "graphql"
 require "graphql/errors"
+require "graphiql/rails" if Rails.env.development?
 require "warden"
 require "bcrypt"
 
