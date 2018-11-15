@@ -1,0 +1,11 @@
+.bundle/
+log/*.log
+pkg/
+node_modules/
+yarn.lock
+spec/dummy/db/*.sqlite3
+spec/dummy/db/*.sqlite3-journal
+spec/dummy/log/*.log
+spec/dummy/node_modules/
+spec/dummy/tmp/
+Gemfile.lock
