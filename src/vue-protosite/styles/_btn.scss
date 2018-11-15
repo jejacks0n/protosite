@@ -1,0 +1,129 @@
+@import './variables';
+
+$btn-text-color: #fff !default;
+$btn-text-alt: #000 !default;
+$btn-style-colors: (
+    "primary": #696969,
+    "secondary": #E9E9E9,
+    "black": #000000,
+) !default;
+
+@function btn_pow($number, $exponent) {
+  $value: 1;
+  @if $exponent > 0 {
+    @for $i from 1 through round($exponent) {
+      $value: $value * $number;
+    }
+  } @else if $exponent < 0 {
+    @for $i from 1 through -$exponent {
+      $value: $value / $number;
+    }
+  }
+  @return $value;
+}
+
+@function btn_color_luminance($color) {
+  $rgba: red($color), green($color), blue($color);
+  $rgba2: ();
+  @for $i from 1 through 3 {
+    $rgb: nth($rgba, $i);
+    $rgb: $rgb / 255;
+    $rgb: if($rgb < .03928, $rgb / 12.92, btn_pow(($rgb + .055) / 1.055, 2.4));
+    $rgba2: append($rgba2, $rgb);
+  }
+  @return (.2126 * nth($rgba2, 1) + .7152 * nth($rgba2, 2) + 0.0722 * nth($rgba2, 3));
+}
+
+@function btn_color_contrast_ratio($color1, $color2) {
+  $luminance1: btn_color_luminance($color1) + .05;
+  $luminance2: btn_color_luminance($color2) + .05;
+  $ratio: $luminance1 / $luminance2;
+  @if $luminance2 > $luminance1 {
+    $ratio: 1 / $ratio;
+  }
+  $ratio: round($ratio * 10) / 10;
+  @return $ratio;
+}
+
+@function btn_test_contrast($background, $textColor: $btn-text-color) {
+  @if (btn_color_contrast_ratio($textColor, $background) > 3.5) {
+    @return $textColor;
+  } @else {
+    @return $btn-text-alt;
+  }
+}
+
+@mixin btn($testContrast: true, $textColor: $btn-text-color) {
+  display: inline-block;
+  margin: 0;
+  padding: 8px 20px;
+  border: 2px solid var(--p);
+  border-radius: 3px;
+  background-color: var(--p);
+  color: var(--c);
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s linear;
+  outline: none;
+  -webkit-appearance: none;
+  font-family: "neuzeit-grotesk", sans-serif;
+  letter-spacing: 0.54px;
+
+  @each $color, $hex in $btn-style-colors {
+    &-#{$color} {
+      --p: #{$hex};
+      --c: #{if($testContrast, btn_test_contrast($hex, $textColor), $textColor)};
+      --h: #{lighten($hex, 5%)};
+      --a: #{darken($hex, 10%)};
+    }
+  }
+  &:focus {
+    color: var(--c);
+  }
+
+  &-round {
+    border-radius: 20px / 50%;
+  }
+  &-circle {
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    border-radius: 50%;
+    white-space: nowrap;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 22px;
+    user-select: none;
+    text-align: center;
+  }
+  &-outline {
+    background-color: transparent;
+    color: var(--p);
+    opacity: 0.4;
+    transition: opacity $speed / 4 $ease-out-sine;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  &:hover:not(:disabled) {
+    background-color: var(--h);
+  }
+  &:focus:not(:disabled),
+  &:active:not(:disabled) {
+    background-color: var(--a);
+  }
+  &-outline:hover:not(:disabled) {
+    color: var(--c);
+    opacity: 1;
+  }
+}
+
+.btn {
+  @include btn();
+}

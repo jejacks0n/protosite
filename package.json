@@ -1,0 +1,19 @@
+{
+  "name": "@legwork/vue-protosite",
+  "version": "0.0.1",
+  "author": "Legwork Studio",
+  "description": "Protosite: An elegant and customizable vue based CMA",
+  "license": "MIT",
+  "main": "src/vue-protosite/index.js",
+  "files": ["src/**/*"],
+  "dependencies": {
+    "@rails/webpacker": "3.5",
+    "@formschema/native": "^2.0.0-alpha.2",
+    "shortid": "^2.2.14",
+    "vue-headful": "^2.0.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.7.0"
+  }
+}
