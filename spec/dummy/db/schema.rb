@@ -10,11 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_14_195729) do
-
+ActiveRecord::Schema.define(version: 2018_10_20_102030) do
   create_table "protosite_pages", force: :cascade do |t|
-    t.string "slug", null: false
-    t.string "title", null: false
+    t.integer "parent_id"
+    t.string "title"
+    t.string "slug"
+    t.integer "sort"
+    t.boolean "published", default: false, null: false
     t.json "data", default: {}
     t.json "versions", default: []
     t.datetime "created_at", null: false
@@ -28,10 +30,10 @@ ActiveRecord::Schema.define(version: 2018_11_14_195729) do
     t.string "authentication_token", null: false
     t.string "password_digest"
     t.json "permissions", default: {}, null: false
+    t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["authentication_token"], name: "index_protosite_users_on_authentication_token", unique: true
     t.index ["email"], name: "index_protosite_users_on_email", unique: true
   end
-
 end

@@ -19,4 +19,7 @@ group :development, :test do
   gem "foreman", require: false
 
   gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "shoulda-matchers"
+  gem "rspec-graphql_matchers", github: "jejacks0n/rspec-graphql_matchers"
 end

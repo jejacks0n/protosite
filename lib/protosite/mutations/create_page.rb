@@ -1,15 +1,15 @@
 module Protosite
   module Mutations
     class CreatePage < BaseMutation
-      argument :title, String, required: false
+      argument :data, String, required: true
 
       type Types::PageType
 
       def resolve(**args)
-        page = Page.create!(args.merge(created_by: current_user))
+        args[:data] = JSON.parse(args[:data])
+        page = Page.create_from_data!(args)
 
-        broadcast(:page_created, oage, args: { id: page.to_param })
-
+        broadcast(:page_created, page, args: { id: page.to_param })
         page
       end
     end

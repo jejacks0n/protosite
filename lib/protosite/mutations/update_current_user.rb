@@ -1,8 +1,8 @@
 module Protosite
   module Mutations
     class UpdateCurrentUser < BaseMutation
-      argument :first_name, String, required: false
-      argument :last_name, String, required: false
+      argument :email, String, required: false
+      argument :password, String, required: false
 
       type Types::UserType
 
@@ -10,7 +10,6 @@ module Protosite
         current_user.update!(args)
 
         broadcast(:user_updated, current_user, args: { id: current_user.to_param })
-
         current_user
       end
     end

@@ -1,6 +1,3 @@
-require "protosite/object_common"
-require "protosite/mutations/base_mutation"
-require "protosite/types/base_scalar"
 require "protosite/types/base_type"
 
 module Protosite
@@ -12,53 +9,9 @@ module Protosite
     use GraphQL::Backtrace
     use GraphQL::Subscriptions::ActionCableSubscriptions
 
-    class Mutation < Types::BaseType
-      field :update_current_user, mutation: Mutations::UpdateCurrentUser
-      field :update_page, mutation: Mutations::UpdatePage
-    end
-
-    class Query < Types::BaseType
-      field :current_user, Types::UserType, null: true
-      field :pages, [Types::PageType], null: true
-
-      field :page, Types::PageType, null: true do
-        argument :id, ID, required: true
-      end
-
-      def pages
-        Page.all.order(:sort)
-      end
-
-      def page(id:)
-        Page.find(id)
-      end
-    end
-
-    class Subscription < Types::BaseType
-      field :notification, Types::NotificationType, null: true
-      field :page_created, Types::PageType, null: true
-      field :page_destroyed, Types::PageType, null: true
-
-      field :user_updated, Types::UserType, null: true do
-        argument :id, ID, required: true
-      end
-
-      field :page_updated, Types::PageType, null: true do
-        argument :id, ID, required: true
-      end
-
-      def user_updated(id:)
-        User.find(id)
-      end
-
-      def page_updated(id:)
-        Page.find(id)
-      end
-    end
-
-    mutation(Mutation)
-    query(Query)
-    subscription(Subscription)
+    mutation(Types::Mutation)
+    query(Types::Query)
+    subscription(Types::Subscription)
 
     GraphQL::Errors.configure(self) do
       if defined?(ActiveRecord)

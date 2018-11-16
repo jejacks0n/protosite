@@ -1,15 +1,13 @@
 module Protosite
   module Mutations
-    class UpdatePage < BaseMutation
+    class PublishPage < BaseMutation
       argument :id, ID, required: true
-      argument :data, String, required: true
 
       type Types::PageType
 
       def resolve(**args)
-        data = JSON.parse(args[:data])
         page = Page.find(args[:id]).tap do |r|
-          r.add_version!(data)
+          r.publish!
         end
 
         broadcast(:page_updated, page, args: { id: page.to_param })

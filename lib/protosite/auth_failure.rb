@@ -7,7 +7,8 @@ module Protosite
 
     def respond
       self.headers["WWW-Authenticate"] = "Basic"
-      self.response_body = "You need to authenticate"
+      self.headers["Content-Type"] = "application/json; charset=utf-8"
+      self.response_body = { errors: "that action requires that you authenticate first" }.to_json
       self.status = 401
     end
   end

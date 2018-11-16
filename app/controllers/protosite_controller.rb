@@ -20,6 +20,7 @@ class ProtositeController < Protosite.configuration.parent_controller.constantiz
         unless approved_dev_request?
           user ||= request.env["warden"].authenticate!
           cookies.signed["protosite_user.id"] = user.id
+          cookies.signed["protosite_user.expires_at"] = Protosite.configuration.cookie_expiration
           user
         end
       end

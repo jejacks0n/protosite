@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
   s.add_dependency "graphiql-rails", ">= 1.4.11"
   s.add_dependency "warden", ">= 1.2.7"
   s.add_dependency "bcrypt", ">= 3.1.12"
+  s.add_dependency "schemattr", ">= 0.0.1"
 end

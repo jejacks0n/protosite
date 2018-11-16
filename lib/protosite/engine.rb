@@ -3,7 +3,7 @@ module Protosite
     isolate_namespace Protosite
 
     routes do
-      root to: "/protosite#execute", via: [:post, :get]
+      root to: "/protosite#execute", via: [:post]
     end
 
     config.app_middleware.use Warden::Manager do |config|

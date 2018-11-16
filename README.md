@@ -72,5 +72,17 @@ There's not a whole lot to document at this point. If you want to override thing
 
 To get things setup for development you need to link the node package. You can do this all from the project root.
 
-- npm link
-- npm link @legwork/vue-protosite
+- `npm link`
+- `npm link @legwork/vue-protosite`
+
+You can start the server with foreman (or whatever you want to do, but this works nice).
+
+- `foreman start -f spec/dummy/Procfile`
+
+After you have the server, you can browse to [the graphiql interface](http://localhost:3000/protosite/graphiql) to
+inspect the schema and to run test queries etc.
+
+### Notes / Todo:
+
+The api allows loading the page hierarchy -- parents, and child pages, and while the parent part is versionable, the
+children aren't yet, unless we query inside the json. 

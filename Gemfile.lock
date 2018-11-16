@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/jejacks0n/rspec-graphql_matchers.git
+  revision: 3942d900a4223ac0b770430b7c5c203c1962e5c2
+  specs:
+    rspec-graphql_matchers (0.7.1)
+      graphql (>= 0.9, < 2)
+
 PATH
   remote: .
   specs:
@@ -7,6 +14,7 @@ PATH
       graphql (>= 1.8.5)
       graphql-errors (>= 0.2.0)
       railties (>= 3.2.5, < 6)
+      schemattr (>= 0.0.1)
       warden (>= 1.2.7)
 
 GEM
@@ -63,13 +71,18 @@ GEM
     dotenv (0.7.0)
     erubi (1.7.1)
     execjs (2.7.0)
+    factory_bot (4.11.1)
+      activesupport (>= 3.0.0)
+    factory_bot_rails (4.11.1)
+      factory_bot (~> 4.11.1)
+      railties (>= 3.0.0)
     ffi (1.9.25)
     foreman (0.64.0)
       dotenv (~> 0.7.0)
       thor (>= 0.13.6)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
-    graphiql-rails (1.4.11)
+    graphiql-rails (1.5.0)
       railties
       sprockets-rails
     graphql (1.8.11)
@@ -167,6 +180,9 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    schemattr (0.0.1)
+    shoulda-matchers (3.1.2)
+      activesupport (>= 4.0.0)
     slim (4.0.1)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
@@ -191,8 +207,8 @@ GEM
     uglifier (4.1.19)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.4.0)
-    warden (1.2.7)
-      rack (>= 1.0)
+    warden (1.2.8)
+      rack (>= 2.0.6)
     webpacker (3.5.5)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
@@ -205,14 +221,17 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  factory_bot_rails
   foreman
   protosite!
   puma (~> 3.11)
   rails (>= 5.2.1)
+  rspec-graphql_matchers!
   rspec-rails
   rubocop
   rubocop-rails_config
   sassc-rails
+  shoulda-matchers
   slim-rails
   sqlite3
   uglifier
