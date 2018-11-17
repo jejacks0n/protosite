@@ -2,7 +2,7 @@ module Protosite
   module Mutations
     class UpdatePage < BaseMutation
       argument :id, ID, required: true
-      argument :data, String, required: true
+      argument :data, Types::JsonType, required: true
 
       type Types::PageType
 

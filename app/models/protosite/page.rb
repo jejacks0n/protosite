@@ -32,7 +32,7 @@ module Protosite
     end
 
     def publish!
-      data = r.versions[0]
+      data = versions[0] || self.data
       update!(Page.attributes_from_data(data).merge(data: data, published: true))
     end
 
