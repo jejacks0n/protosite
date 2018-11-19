@@ -4,8 +4,7 @@ describe Protosite::Mutations::CreatePage do
   subject { described_class }
 
   let(:accepted_args) { {
-    data: "String!",
-    # attachment: "Json!",
+    data: "Json!",
   } }
 
   it { is_expected.to accept_arguments(accepted_args) }
@@ -16,8 +15,7 @@ describe Protosite::Mutations::CreatePage do
 
     let(:user) { create(:user) }
     let(:args) { {
-      data: %{{"title": "New Title"}},
-      # attachment: { "filename" => "Comps FINAL revision 3.png" },
+      data: { title: "New Title" },
     } }
 
     it "creates a page" do

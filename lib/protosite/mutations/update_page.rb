@@ -7,9 +7,8 @@ module Protosite
       type Types::PageType
 
       def resolve(**args)
-        data = JSON.parse(args[:data])
         page = Page.find(args[:id]).tap do |r|
-          r.add_version!(data)
+          r.add_version!(args[:data])
         end
 
         broadcast(:page_updated, page, args: { id: page.to_param })

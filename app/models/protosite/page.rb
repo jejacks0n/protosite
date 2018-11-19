@@ -1,24 +1,27 @@
 module Protosite
   class Page < Protosite.configuration.parent_record.constantize
     belongs_to :parent, optional: true, class_name: "Protosite::Page"
-    has_many :children, foreign_key: :parent_id, class_name: "Protosite::Page"
+    has_many :children, foreign_key: :parent_id, class_name: "Protosite::Page", dependent: :destroy
+
+    before_create :set_sort, unless: :sort
 
     validates :slug,
       presence: { message: "can't be blank -- provide a title or slug in data" },
       uniqueness: { scope: :parent_id }
-    validates :sort,
-      presence: true
-
-    before_validation :set_sort, unless: :sort
 
     scope :roots, -> { where(parent_id: nil) }
-    default_scope -> { order(:sort) }
+    default_scope -> { order(:sort).order(created_at: :desc) }
+
+    def self.build_from_data(attrs)
+      new(attributes_from_data(attrs[:data]).merge(attrs))
+    end
 
     def self.create_from_data!(attrs)
       Page.create!(attributes_from_data(attrs[:data]).merge(attrs))
     end
 
     def self.attributes_from_data(data)
+      data.stringify_keys!
       data["slug"] ||= data["title"].to_s.parameterize
       {
         parent_id: data["parent_id"],

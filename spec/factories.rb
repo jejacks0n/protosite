@@ -6,19 +6,16 @@ FactoryBot.define do
   end
 
   factory :page, class: Protosite::Page do
-    initialize_with { Protosite::Page.create_from_data!(attributes) }
-    parent_id { nil }
+    initialize_with { Protosite::Page.build_from_data(attributes) }
 
     transient do
       sequence(:title) { |n| "Test Page #{n}" }
       slug { nil }
+      sort { nil }
     end
 
     data do
-      {
-        "title" => title,
-        "slug" => slug
-      }
+      { "title" => title, "slug" => slug, "sort" => sort }
     end
   end
 end

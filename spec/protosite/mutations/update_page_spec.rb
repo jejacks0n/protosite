@@ -18,7 +18,7 @@ describe Protosite::Mutations::UpdatePage do
     let(:page) { create(:page) }
     let(:args) { {
       id: page.id,
-      data: { title: "Updated title" }.to_json
+      data: { title: "Updated title" }
     } }
 
     it "updates the page" do

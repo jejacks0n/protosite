@@ -2,8 +2,10 @@ module Protosite
   class User < Protosite.configuration.parent_record.constantize
     before_create :generate_authentication_token!
 
-    validates :name, :email, presence: true
-    validates :email, uniqueness: true
+    validates :name, :email,
+      presence: true
+    validates :email,
+      uniqueness: true
 
     has_secure_password
 
