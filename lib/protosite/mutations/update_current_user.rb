@@ -7,6 +7,8 @@ module Protosite
       type Types::UserType
 
       def resolve(**args)
+        authorize!(current_user, :update_self)
+
         current_user.update!(args)
 
         broadcast(:user_updated, current_user, args: { id: current_user.to_param })

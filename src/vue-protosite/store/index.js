@@ -8,6 +8,7 @@ export const STORE = {
   },
   actions: {
     addPage({ commit }, text) {
+
       commit('addPage', { text, done: false })
     },
     removePage({ commit }, todo) {

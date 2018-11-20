@@ -10,5 +10,5 @@ describe Protosite::Types::Subscription do
 
   it { is_expected.to have_field(:page_created).of_type("Page") }
   it { is_expected.to have_field(:page_removed).of_type("Page") }
-  it { is_expected.to have_field(:page_updated).of_type("Page").with_args(:id) }
+  it { is_expected.to have_field(:page_updated).of_type("Page") }
 end

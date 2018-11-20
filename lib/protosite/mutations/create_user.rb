@@ -8,6 +8,8 @@ module Protosite
       type Types::UserType
 
       def resolve(**args)
+        authorize!(current_user, :admin)
+
         user = User.create!(args)
 
         broadcast(:user_created, user)

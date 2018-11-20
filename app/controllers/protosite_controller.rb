@@ -16,17 +16,15 @@ class ProtositeController < Protosite.configuration.parent_controller.constantiz
 
     def current_user
       @current_user ||= begin
-        user = Protosite::User.find_by(id: cookies.signed["protosite_user.id"])
-        unless approved_dev_request?
-          user ||= request.env["warden"].authenticate!
-          cookies.signed["protosite_user.id"] = user.id
-          cookies.signed["protosite_user.expires_at"] = Protosite.configuration.cookie_expiration
-          user
-        end
+        user = Protosite::User.find_by(id: cookies.signed["protosite_user.id"]) if cookies.signed["protosite_user.id"]
+        user ||= request.env["warden"].authenticate
+        set_user_cookie(user) if user
+        user
       end
     end
 
-    def approved_dev_request?
-      Rails.env.development? && params[:query] =~ /^\s+query IntrospectionQuery/
+    def set_user_cookie(user)
+      cookies.signed["protosite_user.id"] = user.id
+      cookies.signed["protosite_user.expires_at"] = Protosite.configuration.cookie_expiration
     end
 end

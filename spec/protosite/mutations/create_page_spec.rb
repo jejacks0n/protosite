@@ -18,6 +18,16 @@ describe Protosite::Mutations::CreatePage do
       data: { title: "New Title" },
     } }
 
+    it "requires authentication" do
+      subject = described_class.new(object: nil, context: {})
+      expect { subject.resolve(args) }.to raise_error(GraphQL::ExecutionError, "unauthenticated")
+    end
+
+    it "requires authorization" do
+      user.permissions = { create_page: false }
+      expect { subject.resolve(args) }.to raise_error(GraphQL::ExecutionError, "unauthorized")
+    end
+
     it "creates a page" do
       result = subject.resolve(args)
       expect(result).to be_a Protosite::Page
@@ -27,11 +37,7 @@ describe Protosite::Mutations::CreatePage do
     it "broadcasts the expected events" do
       allow(subject).to receive(:broadcast)
       page = subject.resolve(args)
-      expect(subject).to have_received(:broadcast).with(
-        :page_created,
-        page,
-        args: { id: page.to_param }
-      )
+      expect(subject).to have_received(:broadcast).with(:page_created, page)
     end
   end
 end

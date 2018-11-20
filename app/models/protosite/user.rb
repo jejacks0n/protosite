@@ -10,9 +10,10 @@ module Protosite
     has_secure_password
 
     attribute_schema :permissions do
-      boolean :create_pages, default: true
-      boolean :publish_pages, default: true
-      boolean :remove_pages, default: true
+      boolean :create_page, default: true
+      boolean :publish_page, default: true
+      boolean :remove_page, default: true
+      boolean :update_self, default: true
     end
 
     private

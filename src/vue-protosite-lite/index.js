@@ -21,6 +21,7 @@ class Installer {
       // optional, for component overrides
       resolverComponent: Resolver,
       pageComponent: Page,
+      toolbarComponent: Toolbar,
       // optional, for completely overriding the store
       // to do this, you need to match the interface
       // that protosite is expecting
@@ -44,7 +45,7 @@ class Installer {
     Vue.component('protosite-page', opts.pageComponent)
 
     // expose the toolbar, which can be completely overridden if needed
-    Vue.component('protosite-toolbar', 'div')
+    Vue.component('protosite-toolbar', opts.toolbarComponent)
   }
 
   installToStore() {

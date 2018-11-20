@@ -75,6 +75,11 @@ To get things setup for development you need to link the node package. You can d
 - `npm link`
 - `npm link @legwork/vue-protosite`
 
+Next, you'll want a user to connect with, so run the seeds. This will give you an admin@legworkstudio.com / password
+user and login.
+
+- `rails app:db:reset`
+
 You can start the server with foreman (or whatever you want to do, but this works nice).
 
 - `foreman start -f spec/dummy/Procfile`

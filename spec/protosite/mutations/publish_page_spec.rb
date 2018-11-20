@@ -19,6 +19,11 @@ describe Protosite::Mutations::PublishPage do
       id: page.id,
     } }
 
+    it "requires authorization" do
+      user.permissions = { publish_page: false }
+      expect { subject.resolve(args) }.to raise_error(GraphQL::ExecutionError, "unauthorized")
+    end
+
     it "publishes a page" do
       subject.resolve(args)
       expect(page.reload.published?).to be_truthy
@@ -28,11 +33,7 @@ describe Protosite::Mutations::PublishPage do
     it "broadcasts the expected events" do
       allow(subject).to receive(:broadcast)
       subject.resolve(args)
-      expect(subject).to have_received(:broadcast).with(
-        :page_updated,
-        page,
-        args: { id: page.to_param }
-      )
+      expect(subject).to have_received(:broadcast).with(:page_updated, page)
     end
   end
 end

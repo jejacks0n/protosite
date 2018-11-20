@@ -21,6 +21,11 @@ describe Protosite::Mutations::UpdatePage do
       data: { title: "Updated title" }
     } }
 
+    it "requires authorization" do
+      user.permissions = { create_page: false }
+      expect { subject.resolve(args) }.to raise_error(GraphQL::ExecutionError, "unauthorized")
+    end
+
     it "updates the page" do
       subject.resolve(args)
       expect(page.reload.versions).to eq [{ "title" => "Updated title" }]
@@ -29,11 +34,7 @@ describe Protosite::Mutations::UpdatePage do
     it "broadcasts the expected events" do
       allow(subject).to receive(:broadcast)
       subject.resolve(args)
-      expect(subject).to have_received(:broadcast).with(
-        :page_updated,
-        page,
-        args: { id: page.to_param }
-      )
+      expect(subject).to have_received(:broadcast).with(:page_updated, page)
     end
   end
 end

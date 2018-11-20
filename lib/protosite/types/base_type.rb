@@ -15,8 +15,15 @@ module Protosite
         context[:current_user]
       end
 
+      def authorize!(user, action)
+        raise(GraphQL::ExecutionError, "unauthenticated") unless user
+        return true if user.admin?
+        permissions = user.permissions
+        (permissions.respond_to?(action) && permissions.send(action)) || raise(GraphQL::ExecutionError, "unauthorized")
+      end
+
       def broadcast(event, resource, options = {})
-        # Schema.broadcast(event, resource, options)
+        Schema.broadcast(event, resource, options)
       end
     end
 

@@ -6,11 +6,13 @@ module Protosite
       type Types::PageType
 
       def resolve(**args)
+        authorize!(current_user, :remove_page)
+
         page = Page.find(args[:id]).tap do |r|
           r.destroy!
         end
 
-        broadcast(:page_removed, page, args: { id: page.to_param })
+        broadcast(:page_removed, page)
         page
       end
     end

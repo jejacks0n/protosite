@@ -6,11 +6,13 @@ module Protosite
       type Types::PageType
 
       def resolve(**args)
+        authorize!(current_user, :publish_page)
+
         page = Page.find(args[:id]).tap do |r|
           r.publish!
         end
 
-        broadcast(:page_updated, page, args: { id: page.to_param })
+        broadcast(:page_updated, page)
         page
       end
     end

@@ -6,9 +6,11 @@ module Protosite
       type Types::PageType
 
       def resolve(**args)
+        authorize!(current_user, :create_page)
+
         page = Page.create_from_data!(args)
 
-        broadcast(:page_created, page, args: { id: page.to_param })
+        broadcast(:page_created, page)
         page
       end
     end

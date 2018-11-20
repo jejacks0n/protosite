@@ -9,11 +9,6 @@ module Protosite
       field :parent, Types::PageType, null: true
       field :pages, [Types::PageType], null: true
 
-      # def initialize(object, context)
-      #   super
-      #   object.attributes = Page.attributes_from_data(object.data).merge(object.attributes)
-      # end
-
       def parent
         Page.find_by(id: object.data["parent_id"] || object.parent_id)
       end

@@ -15,12 +15,17 @@ describe Protosite::Mutations::CreateUser do
   describe "resolve" do
     subject { described_class.new(object: nil, context: { current_user: user }) }
 
-    let(:user) { create(:user) }
+    let(:user) { create(:user, admin: true) }
     let(:args) { {
       name: "Sterling Archer",
       email: "agent@isis.com",
       password: "password",
     } }
+
+    it "requires authorization" do
+      user.admin = false
+      expect { subject.resolve(args) }.to raise_error(GraphQL::ExecutionError, "unauthorized")
+    end
 
     it "creates a user" do
       result = subject.resolve(args)
@@ -31,10 +36,7 @@ describe Protosite::Mutations::CreateUser do
     it "broadcasts the expected events" do
       allow(subject).to receive(:broadcast)
       user = subject.resolve(args)
-      expect(subject).to have_received(:broadcast).with(
-        :user_created,
-        user
-      )
+      expect(subject).to have_received(:broadcast).with(:user_created, user)
     end
   end
 end

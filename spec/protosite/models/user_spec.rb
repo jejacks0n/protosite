@@ -14,12 +14,12 @@ describe Protosite::User, type: :model do
   end
 
   it "has permission attributes" do
-    expect(subject.permissions.create_pages).to be_truthy
-    expect(subject.permissions.publish_pages).to be_truthy
-    expect(subject.permissions.remove_pages).to be_truthy
+    expect(subject.permissions.create_page).to be_truthy
+    expect(subject.permissions.publish_page).to be_truthy
+    expect(subject.permissions.remove_page).to be_truthy
 
-    subject.permissions.create_pages = false
-    expect(subject.permissions.create_pages).to be_falsey
+    subject.permissions.create_page = false
+    expect(subject.permissions.create_page).to be_falsey
   end
 
   describe "password validations" do

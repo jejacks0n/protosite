@@ -19,6 +19,11 @@ describe Protosite::Mutations::UpdateCurrentUser do
       email: "email@example.com",
     } }
 
+    it "requires authorization" do
+      user.permissions = { update_self: false }
+      expect { subject.resolve(args) }.to raise_error(GraphQL::ExecutionError, "unauthorized")
+    end
+
     it "updates the current user" do
       subject.resolve(args)
       expect(user.reload.email).to eq "email@example.com"
@@ -27,11 +32,7 @@ describe Protosite::Mutations::UpdateCurrentUser do
     it "broadcasts the expected events" do
       allow(subject).to receive(:broadcast)
       subject.resolve(args)
-      expect(subject).to have_received(:broadcast).with(
-        :user_updated,
-        user,
-        args: { id: user.to_param }
-      )
+      expect(subject).to have_received(:broadcast).with(:user_updated, user, args: { id: user.to_param })
     end
   end
 end

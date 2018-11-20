@@ -22,10 +22,10 @@ describe Protosite::Types::UserType do
     end
 
     it "only includes permissions that are true (as to not expose permission names to users who don't have them)" do
-      user.permissions = { create_pages: false, publish_pages: true, remove_pages: false }
+      user.permissions = { create_page: false, publish_page: true, remove_page: false, update_self: false }
       user.admin = true
       expect(subject.permissions).to eq(
-        "publish_pages" => true,
+        "publish_page" => true,
         "admin" => true,
       )
     end

@@ -19,6 +19,11 @@ describe Protosite::Mutations::RemovePage do
       id: page.id,
     } }
 
+    it "requires authorization" do
+      user.permissions = { remove_page: false }
+      expect { subject.resolve(args) }.to raise_error(GraphQL::ExecutionError, "unauthorized")
+    end
+
     it "removes the page" do
       expect { subject.resolve(args) }.to change { Protosite::Page.count }.by(-1)
     end
@@ -26,11 +31,7 @@ describe Protosite::Mutations::RemovePage do
     it "broadcasts the expected events" do
       allow(subject).to receive(:broadcast)
       subject.resolve(args)
-      expect(subject).to have_received(:broadcast).with(
-        :page_removed,
-        page,
-        args: { id: page.to_param }
-      )
+      expect(subject).to have_received(:broadcast).with(:page_removed, page)
     end
   end
 end
