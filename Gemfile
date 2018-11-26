@@ -9,7 +9,7 @@ group :development, :test do
   gem "rubocop", require: false
   gem "rubocop-rails_config"
 
-  # tests / dummy app
+  # dummy app
   gem "puma", "~> 3.11"
   gem "sqlite3"
   gem "slim-rails"
@@ -18,7 +18,11 @@ group :development, :test do
   gem "uglifier"
   gem "foreman", require: false
 
+  # tests
   gem "rspec-rails"
+  gem "selenium-webdriver"
+  gem "chromedriver-helper"
+  gem "capybara"
   gem "factory_bot_rails"
   gem "shoulda-matchers"
   gem "rspec-graphql_matchers", github: "jejacks0n/rspec-graphql_matchers"

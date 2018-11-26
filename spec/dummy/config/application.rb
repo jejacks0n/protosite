@@ -14,22 +14,16 @@ require "action_cable/engine"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 require "protosite"
 
 module Dummy
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
     config.eager_load = Rails.env.production?
     config.cache_classes = !Rails.env.production?
-    config.consider_all_requests_local = !Rails.env.production?
-
-    # Don't generate system test files.
-    config.generators.system_tests = nil
+    config.consider_all_requests_local = Rails.env.development?
   end
 end
 
@@ -45,4 +39,25 @@ end
 Rails.application.initialize! unless Rails.application.instance_variable_get(:"@initialized")
 Rails.application.routes.draw do
   get "/(*path)", to: "root#app", constraints: Proc.new { |req| req.format == :html }
+end
+
+require "webpacker/compiler"
+class Webpacker::Compiler
+  private
+
+    def run_webpack
+      logger.info "Compiling…"
+
+      stdout, sterr, status = Dir.chdir(Rails.root) do
+        Open3.capture3(webpack_env, "#{RbConfig.ruby} ./bin/webpack")
+      end
+
+      if status.success?
+        logger.info "Compiled all packs in #{config.public_output_path}"
+      else
+        logger.error "Compilation failed:\n#{sterr}\n#{stdout}"
+      end
+
+      status.success?
+    end
 end

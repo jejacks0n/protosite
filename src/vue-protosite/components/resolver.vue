@@ -1,13 +1,13 @@
 <template>
-  <component ref="component" :is="resolveTemplate(page)">
+  <component ref="component" :is="resolve(page)">
     <template slot="protosite" slot-scope="{schema}">
-      <protosite-headful :title="page.title" :description="page.description"/>
-      <protosite-toolbar :schema="schema" @persist="persistPage" v-if="can('edit')"/>
+      <protosite-headful :title="page.data.title" :description="page.data.description || page.data.title"/>
+      <protosite-toolbar :schema="schema" @persist="persist"/>
     </template>
     <template slot="components">
-      <component v-for="c in page.components" :key="c.id" :is="resolveComponent(c)" :data="c">
+      <component v-for="c in page.data.components" :key="c.id" :is="resolve(c)" :data="c">
         <template slot="protosite" slot-scope="{schema}">
-          <protosite-controls :schema="schema" :data="c" @persist="persistComponent" v-if="page.editing && can('edit')"/>
+          <!--<protosite-controls :schema="schema" :data="c" @persist="persist"/>-->
         </template>
       </component>
     </template>
@@ -18,20 +18,9 @@
   export default {
     name: 'Resolver',
     methods: {
-      persistPage(e) {
-        this.$refs['component'].persistPage()
+      persist() {
+        console.log('persisting....')
       },
-      persistComponent(e, data, mutableData) {
-        this.$refs['component'].persistComponent(data, mutableData)
-      },
-
-      resolveTemplate(page) {
-        return 'div'
-      },
-
-      resolveComponent(component) {
-        return 'div'
-      }
     },
   }
 </script>

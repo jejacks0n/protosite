@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Protosite::Page, type: :model do
-  subject { build(:page) }
+  subject { build(:page, parent_id: "666") }
 
   it { is_expected.to belong_to(:parent) }
   it { is_expected.to have_many(:children).dependent(:destroy) }
@@ -24,7 +24,7 @@ describe Protosite::Page, type: :model do
     let(:parent) { create(:page) }
 
     it "allows pulling some attributes from data" do
-      subject = build(:page, data: { "parent_id" => parent.id, "sort" => 666, "slug" => "custom-slug" })
+      subject = build(:page, data: { parent_id: parent.id, sort: 666, slug: "custom-slug" })
 
       expect(subject.parent).to eq parent
       expect(subject.slug).to eq "custom-slug"
@@ -32,13 +32,15 @@ describe Protosite::Page, type: :model do
     end
 
     it "sets the slug from the title" do
-      subject = build(:page, data: { "title" => "Weird & long title" })
+      subject = build(:page, data: { title: "Weird & long title" })
 
       expect(subject.slug).to eq "weird-long-title"
     end
   end
 
   describe "defaulting the sort" do
+    subject { build(:page) }
+
     it "sets it to the number of siblings if none was provided" do
       expect(subject.sort).to eq nil
 

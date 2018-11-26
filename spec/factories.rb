@@ -6,7 +6,9 @@ FactoryBot.define do
   end
 
   factory :page, class: Protosite::Page do
-    initialize_with { Protosite::Page.build_from_data(attributes) }
+    initialize_with do
+      Protosite::Page.new(Protosite::Page.attributes_from_data(attributes[:data], true).merge(attributes))
+    end
 
     transient do
       sequence(:title) { |n| "Test Page #{n}" }

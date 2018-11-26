@@ -11,14 +11,13 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2018_10_20_102030) do
-  create_table "protosite_pages", force: :cascade do |t|
-    t.integer "parent_id"
-    t.string "title"
+  create_table "protosite_pages", id: :string, force: :cascade do |t|
+    t.string "parent_id"
     t.string "slug"
     t.integer "sort"
     t.boolean "published", default: false, null: false
-    t.json "data", default: {}
-    t.json "versions", default: []
+    t.json "data", default: {}, null: false
+    t.json "versions", default: [], null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_protosite_pages_on_slug"

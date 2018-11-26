@@ -1,20 +1,24 @@
 <template>
   <section class="application">
-    <h1>Protosite</h1>
+    <h1>Protosite Demo</h1>
     <nav>
-      <router-link v-for="p in pages" :key="p.id" :to="'/' + p.path">{{p.title}}<br></router-link>
+      <navigation :pages="pages" depth="2"/>
     </nav>
-    <transition name="page">
-      <router-view/>
-    </transition>
+    <section class="content">
+      <transition name="page">
+        <router-view/>
+      </transition>
+    </section>
   </section>
 </template>
 
 <script>
   import {mapState} from 'vuex'
+  import Navigation from 'components/navigation'
 
   export default {
     name: 'App',
+    components: { Navigation },
     computed: {
       ...mapState(['pages']),
     },

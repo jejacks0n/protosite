@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "dummy/config/environment"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require "rspec/rails"
+require "capybara/rspec"
 
 Dir[File.expand_path("../support/**/*.rb", __FILE__)].each { |f| require f }
 

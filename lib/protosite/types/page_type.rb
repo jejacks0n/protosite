@@ -14,6 +14,9 @@ module Protosite
       end
 
       # TODO: pages should be versioned too, so we'd need to query inside the json for that potentially.
+      def pages
+        object.children
+      end
     end
   end
 end

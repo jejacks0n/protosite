@@ -16,13 +16,13 @@ class CreateProtositeTables < ActiveRecord::Migration[5.2]
     add_index :protosite_users, :email, unique: true
     add_index :protosite_users, :authentication_token, unique: true
 
-    create_table :protosite_pages do |t|
-      t.integer :parent_id
+    create_table :protosite_pages, id: :string do |t|
+      t.string :parent_id
       t.string :slug
       t.integer :sort
       t.boolean :published, null: false, default: false
-      t.json :data, default: {}
-      t.json :versions, default: []
+      t.json :data, default: {}, null: false
+      t.json :versions, default: [], null: false
 
       t.timestamps null: false
     end

@@ -6,6 +6,16 @@ module Protosite
       root to: "/protosite#execute", via: [:post]
     end
 
+    initializer "protosite.helpers" do
+      ActiveSupport.on_load(:action_controller) do
+        ActionController::Base.include(Protosite::Mixins::Controller)
+      end
+
+      ActiveSupport.on_load(:action_cable) do
+        ActionCable::Connection::Base.include(Protosite::Mixins::Connection)
+      end
+    end
+
     config.app_middleware.use Warden::Manager do |config|
       config.default_strategies :protosite_token_strategy, :protosite_basic_strategy
       config.failure_app = AuthFailure

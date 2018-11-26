@@ -32,10 +32,14 @@ module Protosite
       end
     end
 
+    def self.run(query)
+      execute({ "query" => "query { #{query} }" }, { current_user: nil })
+    end
+
     def self.execute(data, context)
       super(
         query: data["query"],
-        variables: ensure_hash(data["variables"]),
+        variables: ensure_hash(data["variables"] || {}),
         operation_name: data["operationName"],
         context: context
       )

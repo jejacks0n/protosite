@@ -2,7 +2,7 @@ import {Resolver, Headful, Page} from './components'
 import {STORE} from './store'
 import {Logger} from './logger'
 
-let Vue, config, opts
+let Vue, config, opts, store
 
 class Instance {
   constructor({ store, router }) {
@@ -14,42 +14,40 @@ class Instance {
 class Installer {
   constructor(options) {
     opts = Object.assign({
-      // required
-      store: null,
-      // optional, for page route handling
-      router: null,
-      // optional, for component overrides
+      store: null, // required
+      router: null, // recommended
       resolverComponent: Resolver,
       pageComponent: Page,
-      // optional, for completely overriding the store
-      // to do this, you need to match the interface
-      // that protosite is expecting
-      storeModule: STORE
+      storeModule: STORE,
+      logger: Logger.log
     }, config, options)
+
+    this.instance = new Instance({ store: opts.store, router: opts.router })
+    Vue.prototype['$protosite'] = this.instance
 
     this.installComponents()
     this.installToStore()
-    // this.installToRouter()
-    // this.installMixins()
-
-    Vue.prototype['$protosite'] = new Instance({ store: opts.store, router: opts.router })
+    this.installToRouter()
+    this.installMixins()
   }
 
   installComponents() {
-    // expose vue-headful protosite-headful for consistency
-    Vue.component('protosite-headful', Headful)
+    opts.logger('Adding components for rendering.')
 
-    // expose the resolver and page components for flexibility later
+    Vue.component('protosite-headful', Headful)
     Vue.component('protosite-resolver', opts.resolverComponent)
     Vue.component('protosite-page', opts.pageComponent)
-
-    // expose the toolbar, which can be completely overridden if needed
-    Vue.component('protosite-toolbar', 'div')
+    Vue.component('protosite-toolbar', {render: () => ''})
   }
 
   installToStore() {
+    opts.logger('Registering the store module.')
+
     if (opts.store.registerModule) {
       opts.store.registerModule('protosite', opts.storeModule)
+      // TODO: if this is empty, we should assume we need to load pages via the api?
+      opts.store.commit('setPages', opts.store.state.pages, { module: 'protosite' })
+      store = opts.store.state.protosite
     } else {
       Logger.error('There was no way to register with the store, did you provide one in configuration or options?')
       throw new Error('Protosite: Unable to use provided store')
@@ -57,119 +55,58 @@ class Installer {
   }
 
   installToRouter() {
-    // TODO: Huge! need to figure out how we're going to try to load pages
-    opts.router.addRoutes(this.buildRoutesFor(opts.store.protosite.pages))
+    opts.logger('Building and adding routes.')
+
+    opts.router.addRoutes(this.buildRoutesFor(store.pages))
     opts.router.beforeEach((to, from, next) => {
-      let page = (to.meta && to.meta.page) // TODO: resolve page from page id if that's all we've got
+      let page = (to.meta && to.meta.page)
+      page = (typeof page === 'string') ? store.getters.findPage(page) : page
+      opts.logger('Setting page:', page)
       opts.store.commit('currentPage', page, { module: 'protosite' })
       next()
     })
   }
 
-  buildRoutesFor(array, parent) {
+  installMixins() {
+    opts.logger('Installing base mixins.')
+
+    Vue.mixin({
+      computed: {
+        page: {
+          get: () => store.currentPage,
+          set: (value) => opts.store.commit('currentPage', value, { module: 'protosite' }),
+        },
+      },
+      methods: {
+        resolve(object) {
+          const resolver = opts.store.state.resolver
+          if (object.data) {
+            return resolver[object.data.type] || resolver['default-template'] || opts.pageComponent
+          } else {
+            return resolver[object.type] || resolver['default-type'] || 'div'
+          }
+        }
+      }
+    })
+  }
+
+  buildRoutesFor(array, parent = null) {
     let routes = []
     if (!array) return routes
-    for (const i of array) {
-      const page = array[i]
-      opts.store.commit('addPage', page, parent, i + 1, { module: 'protosite' })
+    for (const page of array) {
+      page.path = !parent ? `/${page.slug}` : [parent.path, page.slug].join('/').replace(/\/+/ig, '/')
       routes.push({
-        path: parent ? page.slug : page.path,
+        path: !parent ? `/${page.slug}` : page.slug,
         component: opts.resolverComponent,
-        children: this.buildRoutesFor(page.children, page),
+        children: this.buildRoutesFor(page.pages, page),
         meta: { page: page },
       })
     }
     return routes
   }
 
-  installMixins() {
-    Vue.mixin({
-      computed: {
-        page: {
-          get() {
-            return opts.store.state.protosite.currentPage
-          },
-          set(value) {
-            opts.store.commit('currentPage', value, { module: 'protosite' })
-          },
-        },
-        currentUser() {
-          return opts.store.state.protosite.currentUser
-        },
-      },
-      methods: {
-        persistPage() {
-          this.$protosite.persistPage(this.page)
-        },
-        persistComponent(data, mutableData) {
-          this.$protosite.persistComponent(this.page, data, mutableData)
-        },
-        resolveTemplate(page) {
-          return opts.resolver[page.template] || opts.resolver['default-template'] || opts.pageComponent
-        },
-        resolveComponent(component) {
-          return opts.resolver[component.type] || opts.resolver['default-component'] || 'div'
-        },
-        defaultsFromSchema(schema, extra) {
-          let ret = {}
-          for (let key of Object.keys(schema.properties)) {
-            if (typeof schema.properties[key].default !== 'undefined') {
-              ret[key] = schema.properties[key].default
-            }
-          }
-          console.log(ret)
-
-          return Object.assign(ret, extra)
-        },
-        can(action, options = {}) {
-          return true
-          // const user = options.user || this.currentUser
-          // return user.permissions['admin'] || user.permissions[action]
-        },
-      },
-    })
-  }
-
-  persistPage(page) {
-    this.resolvePage(page, opts.store.state.pages)
-    opts.store.commit('pages', opts.store.state.pages)
-  }
-
-  persistComponent(page, data, mutableData) {
-    this.resolveComponent(page, data, mutableData)
-    this.persistPage(page)
-  }
-
-  resolvePage(page, array, depth = 0) {
-    const paths = page.fullPath.split('/')
-    for (const i in array) {
-      if (paths[depth] === array[i].path) {
-        if (paths[depth + 1] && array[i].children) {
-          let x = this.resolvePage(page, array[i].children, depth + 1)
-          if (!x) this.resolvePage(page, array, depth + 1)
-        } else {
-          this.replaceInArray(array, i, page)
-          return true
-        }
-      }
-    }
-  }
-
-  resolveComponent(page, data, updatedData) {
-    let index = page.components.indexOf(data)
-    this.replaceInArray(page.components, index, updatedData)
-  }
-
-  replaceInArray(array, index, replacement) {
-    if (replacement === null) {
-      array.splice(index, 1)
-    } else {
-      array.splice(index, 1, replacement)
-    }
-  }
-
   static install(V, c = {}) {
-    Logger.log('Installing 123...')
+    Logger.log('Installing...')
     Vue = V
     config = c
   }
