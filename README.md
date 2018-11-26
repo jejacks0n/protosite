@@ -86,26 +86,30 @@ const store = new Vuex.Store({
 // Here we create a catchall route and tell protosite which page to use. This
 // can be used to create aliases, or redirects, using just the pages unique ID.
 const router = new VueRouter({
+  mode: 'history',
+  fallback: false,
   routes: [
-    {path: '*', page: 'error_404'}
-  ]
+    { path: '*', page: 'error_404' },
+  ],
 })
 
-// Setup protosite. Protosite reqiures the store and for the store to have a
-// resolver state and optionally a pages array.
-// 
-// Protosite can be instantiated with some configuration options as well. 
-const protosite = new VueProtosite({
-  store,
-  router,
-  // resolverComponent: CustomResolver,
-  // pageComponent: CustomPage,
-  // storeModule: CUSTOM_STORE,
-  // logger: (message) => console.log(message)
-})
+// Setup protosite. Protosite requires the store and for the store to have a
+// resolver and optionally a pages array.
+//
+// Protosite can be instantiated with some configuration options to change
+// behavior as well. To provide any override though, a deep understanding of
+// the implementation is needed.
+//
+// resolverComponent: CustomResolver,
+// pageComponent: CustomPage,
+// storeModule: CUSTOM_STORE,
+// toolbarPack: 'custom_toolbar'
+//
+// If a user is signed in with the correct access privileges, the protosite
+// toolbar will be presented to the user.
+const protosite = new VueProtosite({ store, router, logger: () => null })
 
-// Render the app to the page. If a user is signed in with the correct access
-// privileges, the protosite toolbar will be presented to the user.
+// Render the app to the page.
 document.addEventListener('DOMContentLoaded', () => {
   new Vue({ store, router, protosite, el: '#root', components: { App } })
 })
@@ -113,11 +117,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ### API Layer
 
-There's not a whole lot to document at this point. If you want to override things you can fairly easily. Have at it!
-
 In the view you can use the `pages(depth: 2, attrs: 'id, data')` helper method to statically load in the pages. You can
-specify the depth and which attributes to query. In future releases it might be nice to specify which data attributes to
-include as well.
+specify the depth and which attributes to query.
+
+```slim
+doctype html
+html
+  head
+    title Protosite Demo
+    link rel="shortcut icon" href="/assets/favicon.ico"
+    meta name="author" content="Legwork"
+    = javascript_tag { raw "window.data = #{pages(depth: 5).to_json}" }
+    = javascript_pack_tag "application.js"
+    = stylesheet_pack_tag "application.css"
+  body
+    div#root
+      App.application
+```
 
 ## Development / Contributing
 

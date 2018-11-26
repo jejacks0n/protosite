@@ -4,8 +4,7 @@ html
     title Protosite Demo
     link rel="shortcut icon" href="/assets/favicon.ico"
     meta name="author" content="Legwork"
-    javascript:
-      window.data = #{raw pages(depth: 5).to_json}
+    = javascript_tag { raw "window.data = #{pages(depth: 5).to_json}" }
     = javascript_pack_tag "application.js"
     = stylesheet_pack_tag "application.css"
   body
