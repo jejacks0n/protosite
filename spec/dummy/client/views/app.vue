@@ -2,7 +2,7 @@
   <section class="application">
     <h1>Protosite Demo</h1>
     <nav>
-      <navigation :pages="pages" depth="2"/>
+      <navigation :pages="pages" depth="5"/>
     </nav>
     <section class="content">
       <transition name="page">

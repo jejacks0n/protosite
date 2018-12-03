@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= @page.data["title"] %></title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= javascript_tag { raw "window.data = #{pages(depth: 5).to_json}" } %>
+    <%= javascript_pack_tag "application.js" %>
+    <%= stylesheet_pack_tag "application.css" %>
+  </head>
+  <body>
+  <div id="root">
+    <App class="application"/>
+  </div>
+  </body>
+</html>

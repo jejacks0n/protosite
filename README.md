@@ -33,11 +33,11 @@ Get the migrations by running the install task.
 rails protosite:install:migrations db:migrate
 ```
 
-You can configuration it in your initializers.
+You can configure it in your initializers.
 
 ```ruby
 Protosite.configure do |config|
-  config.mount_at          = "/custom_path"
+  config.mount_at          = "/protosite"
   config.cookie_expiration = 30.minutes
 
   config.parent_controller = "ActionController::Base"
@@ -51,6 +51,11 @@ end
 
 ### Client Layer
 
+You'll need two packages for Protosite to function correctly for users with editing capabilities.
+
+In your primary application do something similar to the following to get the core functionality and rendering
+capabilities of the Protosite core. Here's an example for Vue.
+
 ```javascript
 import Vue from 'vue/dist/vue.js'
 import Vuex from 'vuex'
@@ -58,9 +63,8 @@ import VueRouter from 'vue-router'
 import VueProtosite from '@legwork/vue-protosite'
 
 import App from 'views/app'
-import Work from 'views/work'
-
-import Hero from 'components/hero'
+// import Work from 'views/work'
+// import Hero from 'components/hero'
 
 Vue.use(Vuex)
 Vue.use(VueRouter)
@@ -73,8 +77,8 @@ const store = new Vuex.Store({
   state: {
     pages: window.data.pages,
     resolver: {
-      'work-template': Work,
-      'hero': Hero,
+      // 'work-template': Work,
+      // 'hero': Hero,
     },
   },
 })
@@ -82,7 +86,7 @@ const store = new Vuex.Store({
 // Setup the router. Protosite will optionally add in all routes for the page
 // hierarchy if a router is provided. Handling would need to be implemented on
 // your own if you don't include the router.
-// 
+//
 // Here we create a catchall route and tell protosite which page to use. This
 // can be used to create aliases, or redirects, using just the pages unique ID.
 const router = new VueRouter({
@@ -103,10 +107,10 @@ const router = new VueRouter({
 // resolverComponent: CustomResolver,
 // pageComponent: CustomPage,
 // storeModule: CUSTOM_STORE,
-// toolbarPack: 'custom_toolbar'
 //
-// If a user is signed in with the correct access privileges, the protosite
-// toolbar will be presented to the user.
+// If a user is signed in with the correct access privileges, the Protosite
+// interface pack will be loaded and presented to the user. The Protosite
+// interface can be configured and modified in the protosite.js pack.
 const protosite = new VueProtosite({ store, router, logger: () => null })
 
 // Render the app to the page.
@@ -114,6 +118,22 @@ document.addEventListener('DOMContentLoaded', () => {
   new Vue({ store, router, protosite, el: '#root', components: { App } })
 })
 ````
+
+To enable the editing capabilities you'll need to create another pack. Create a `protosite.js` file in your packs path
+and setup the following.
+
+```javascript
+import Protosite from '@legwork/vue-protosite/interface'
+
+// You can configure the Protosite interface here and override functionality of
+// any of the base components if you'd like. The Protosite interface exposes
+// most of itself for the express purpose of being extensible and flexible. 
+
+// Finally, we expose this so Protosite core can instantiate it and give us our
+// CMA interface.
+window.Protosite = Protosite
+```
+
 
 ### API Layer
 

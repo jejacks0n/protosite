@@ -3,6 +3,10 @@ class ProtositeController < Protosite.configuration.parent_controller.constantiz
 
   rescue_from GraphQL::ExecutionError, with: :handle_error
 
+  def app
+    @page = Protosite::Page.new
+  end
+
   def execute
     render json: Protosite::Schema.execute(params, current_user: current_user, channel: nil)
   end

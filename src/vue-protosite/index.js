@@ -90,11 +90,19 @@ class Installer {
     })
   }
 
+  installToolbar() {
+    var s = document.createElement("script");
+    s.type = "text/javascript";
+    s.src = "http://somedomain.com/somescript";
+    $("head").append(s);
+  }
+
   buildRoutesFor(array, parent = null) {
     let routes = []
     if (!array) return routes
     for (const page of array) {
       page.path = !parent ? `/${page.slug}` : [parent.path, page.slug].join('/').replace(/\/+/ig, '/')
+      page.parent = parent
       routes.push({
         path: !parent ? `/${page.slug}` : page.slug,
         component: opts.resolverComponent,
