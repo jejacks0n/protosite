@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" dir="ltr">
   <head>
     <title><%= @page.data["title"] %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="<%= @page.data["description"] %>">
+    <!--<link rel="icon" type="image/x-icon" href="https://example.com/favicon.ico">-->
+    <!--<link rel="icon" type="image/png" href="https://example.com/favicon.png">-->
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= javascript_tag { raw "window.data = #{pages(depth: 5).to_json}" } %>
-    <%= javascript_pack_tag "application.js" %>
+    <%= javascript_tag { raw "window.data = #{protosite_data(depth: 5).to_json}" } %>
     <%= stylesheet_pack_tag "application.css" %>
+    <%= javascript_pack_tag "application.js" %>
   </head>
   <body>
   <div id="root">

@@ -11,6 +11,11 @@ class ProtositeController < Protosite.configuration.parent_controller.constantiz
     render json: Protosite::Schema.execute(params, current_user: current_user, channel: nil)
   end
 
+  def login
+    @current_user = request.env["warden"].authenticate!
+    redirect_to "/"
+  end
+
   private
 
     def handle_error(e, status = 500, data = {})

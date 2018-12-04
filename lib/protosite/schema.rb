@@ -32,8 +32,8 @@ module Protosite
       end
     end
 
-    def self.run(query)
-      execute({ "query" => "query { #{query} }" }, { current_user: nil })
+    def self.run(query, context = { current_user: nil })
+      execute({ "query" => "query { #{query} }" }, context)
     end
 
     def self.execute(data, context)
