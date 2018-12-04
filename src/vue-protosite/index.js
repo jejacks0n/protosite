@@ -1,8 +1,9 @@
 import {Resolver, Headful, Page} from './components'
 import {STORE} from './store'
 import {Logger} from './logger'
+import {Interface} from './interface'
 
-let Vue, config, opts, store
+let Vue, config, opts
 
 class Instance {
   constructor({ store, router }) {
@@ -29,6 +30,7 @@ class Installer {
     this.installToStore()
     this.installToRouter()
     this.installMixins()
+    this.installInterface()
   }
 
   installComponents() {
@@ -45,9 +47,7 @@ class Installer {
 
     if (opts.store.registerModule) {
       opts.store.registerModule('protosite', opts.storeModule)
-      // TODO: if this is empty, we should assume we need to load pages via the api?
-      opts.store.commit('setPages', opts.store.state.pages, { module: 'protosite' })
-      store = opts.store.state.protosite
+      opts.store.dispatch('protosite/setPages', opts.store.state.pages)
     } else {
       Logger.error('There was no way to register with the store, did you provide one in configuration or options?')
       throw new Error('Protosite: Unable to use provided store')
@@ -57,12 +57,12 @@ class Installer {
   installToRouter() {
     opts.logger('Building and adding routes.')
 
-    opts.router.addRoutes(this.buildRoutesFor(store.pages))
+    opts.router.addRoutes(this.buildRoutesFor(opts.store.state.protosite.pages))
     opts.router.beforeEach((to, from, next) => {
       let page = (to.meta && to.meta.page)
-      page = (typeof page === 'string') ? store.getters.findPage(page) : page
+      page = (typeof page === 'string') ? opts.store.getters['protosite/findPage'](page) : page
       opts.logger('Setting page:', page)
-      opts.store.commit('currentPage', page, { module: 'protosite' })
+      opts.store.commit('protosite/currentPage', page)
       next()
     })
   }
@@ -73,7 +73,7 @@ class Installer {
     Vue.mixin({
       computed: {
         page: {
-          get: () => store.currentPage,
+          get: () => opts.store.state.protosite.currentPage,
           set: (value) => opts.store.commit('currentPage', value, { module: 'protosite' }),
         },
       },
@@ -90,11 +90,15 @@ class Installer {
     })
   }
 
-  installToolbar() {
-    var s = document.createElement("script");
-    s.type = "text/javascript";
-    s.src = "http://somedomain.com/somescript";
-    $("head").append(s);
+  installInterface() {
+    if (!window.data.currentUser) return
+    opts.logger('Installing toolbar interface.')
+
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.onload = () => window.Protosite(Vue, opts)
+    s.src = window.data.protositePackSrc;
+    document.head.appendChild(s);
   }
 
   buildRoutesFor(array, parent = null) {
@@ -120,5 +124,9 @@ class Installer {
   }
 }
 
+Installer.Resolver = Resolver
+Installer.Page = Page
+Installer.Headful = Headful
+
 export default Installer
-export {Instance}
+export {Instance, Interface, Resolver, Page, Headful}

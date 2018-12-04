@@ -36,7 +36,7 @@ const router = new VueRouter({
   mode: 'history',
   fallback: false,
   routes: [
-    { path: '*', page: 'error_404' },
+    { path: '*', component: VueProtosite.Resolver, meta: { page: 'error_404' } },
   ],
 })
 
