@@ -1,6 +1,6 @@
 import Headful from 'vue-headful'
-import Resolver from './resolver'
-import Page from './page'
+import Resolver from './resolver.vue'
+import Page from './page.vue'
 
 export {
   Headful,
