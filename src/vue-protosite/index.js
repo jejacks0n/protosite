@@ -1,3 +1,5 @@
+import {sync} from 'vuex-router-sync'
+
 import {Resolver, Headful, Page} from './components'
 import {STORE} from './store'
 import {Logger} from './logger'
@@ -9,6 +11,8 @@ class Instance {
   constructor({ store, router }) {
     this.store = store
     this.router = router
+
+    if (store && router) sync(store, router)
   }
 }
 
