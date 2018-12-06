@@ -24,7 +24,7 @@ class Installer {
       resolverComponent: Resolver,
       pageComponent: Page,
       storeModule: STORE,
-      logger: Logger.log
+      logger: Logger.log,
     }, config, options)
 
     this.instance = new Instance({ store: opts.store, router: opts.router })
@@ -43,7 +43,7 @@ class Installer {
     Vue.component('protosite-headful', Headful)
     Vue.component('protosite-resolver', opts.resolverComponent)
     Vue.component('protosite-page', opts.pageComponent)
-    Vue.component('protosite-toolbar', {render: () => ''})
+    Vue.component('protosite-toolbar', { render: () => '' })
   }
 
   installToStore() {
@@ -51,7 +51,7 @@ class Installer {
 
     if (opts.store.registerModule) {
       opts.store.registerModule('protosite', opts.storeModule)
-      opts.store.dispatch('protosite/setPages', opts.store.state.pages)
+      opts.store.dispatch('protosite/setPages', opts.store.state.data.pages)
     } else {
       Logger.error('There was no way to register with the store, did you provide one in configuration or options?')
       throw new Error('Protosite: Unable to use provided store')
@@ -89,22 +89,24 @@ class Installer {
           } else {
             return resolver[object.type] || resolver['default-type'] || 'div'
           }
-        }
-      }
+        },
+      },
     })
   }
 
   installInterface() {
-    if (typeof window === 'undefined') return
-    if (typeof window.data === 'undefined') return
-    if (!window.data.currentUser) return
+    // if (!opts.store.state.data.currentUser) return
     opts.logger('Installing toolbar interface.')
 
-    var s = document.createElement('script');
-    s.type = 'text/javascript';
-    s.onload = () => window.Protosite(Vue, opts)
-    s.src = window.data.protositePackSrc;
-    document.head.appendChild(s);
+    if (opts.interface) {
+      opts.interface(Vue, opts)
+    } else if (opts.store.state.data.protositePackSrc) {
+      var s = document.createElement('script')
+      s.type = 'text/javascript'
+      s.onload = () => Protosite(Vue, opts)
+      s.src = opts.store.state.data.protositePackSrc
+      document.head.appendChild(s)
+    }
   }
 
   buildRoutesFor(array, parent = null) {

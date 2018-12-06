@@ -11,5 +11,5 @@ export function Interface(Vue, opts) {
     },
   })
   instance.$mount()
-  document.querySelector('body').appendChild(instance.$el)
+  if (typeof document !== 'undefined') document.querySelector('body').appendChild(instance.$el)
 }
