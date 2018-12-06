@@ -96,6 +96,7 @@ class Installer {
 
   installInterface() {
     if (typeof window === 'undefined') return
+    if (typeof window.data === 'undefined') return
     if (!window.data.currentUser) return
     opts.logger('Installing toolbar interface.')
 
