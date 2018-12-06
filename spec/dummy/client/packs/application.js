@@ -18,7 +18,7 @@ Vue.use(VueProtosite)
 // pages present Protosite will attempt to load pages from the API.
 const store = new Vuex.Store({
   state: {
-    pages: window.data.pages,
+    data: window.data,
     resolver: {
       'work-template': Work,
       'hero': Hero,
