@@ -95,12 +95,12 @@ class Installer {
   }
 
   installInterface() {
-    // if (!opts.store.state.data.currentUser) return
+    if (!opts.store.state.data.currentUser) return
     opts.logger('Installing toolbar interface.')
 
     if (opts.interface) {
       opts.interface(Vue, opts)
-    } else if (opts.store.state.data.protositePackSrc) {
+    } else if (typeof document !== 'undefined' && opts.store.state.data.protositePackSrc) {
       var s = document.createElement('script')
       s.type = 'text/javascript'
       s.onload = () => Protosite(Vue, opts)
