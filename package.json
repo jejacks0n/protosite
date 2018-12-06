@@ -5,10 +5,7 @@
   "description": "Protosite: An elegant and customizable vue based CMA",
   "license": "MIT",
   "main": "src/vue-protosite/index.js",
-  "files": [
-    "src/**/*",
-    ".babelrc"
-  ],
+  "files": ["src/**/*"],
   "dependencies": {
     "@formschema/native": "^2.0.0-alpha.2",
     "@rails/webpacker": "3.5",
