@@ -2,7 +2,8 @@ const styles = ['background:#ddd;color:#000', 'background:#000;color:#fff']
 
 export const Logger = {
   log: (...messages) => {
-    const opts = messages[messages.length - 1].status ? messages.pop() : {}
+    let last = messages[messages.length - 1]
+    const opts = last && last.status ? messages.pop() : {}
     Logger.output(messages, opts)
   },
 

@@ -1,11 +1,11 @@
 <template>
-  <component ref="component" :is="resolve(page)">
+  <component ref="component" :is="resolve(page, 'page')">
     <template slot="protosite" slot-scope="{schema}">
-      <protosite-headful :title="page.data.title" :description="page.data.description || page.data.title"/>
+      <!--<protosite-headful :title="page.data.title" :description="page.data.description || page.data.title"/>-->
       <protosite-toolbar :schema="schema" @persist="persist"/>
     </template>
     <template slot="components">
-      <component v-for="c in page.data.components" :key="c.id" :is="resolve(c)" :data="c">
+      <component v-for="c in page.data.components" :key="c.id" :is="resolve(c, 'component')" :data="c">
         <template slot="protosite" slot-scope="{schema}">
           <!--<protosite-controls :schema="schema" :data="c" @persist="persist"/>-->
         </template>

@@ -1,5 +1,5 @@
 <template>
-  <section class="page">
+  <section class="page" :class="[page.id, page.data.type]">
     <h1>{{page.data.title}}</h1>
     <slot name="protosite" :schema="schema"/>
     <slot name="components"/>
@@ -10,9 +10,7 @@
   export default {
     name: 'Page',
     data() {
-      return {
-        schema
-      }
+      return { schema }
     },
   }
 
