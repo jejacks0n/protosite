@@ -49,7 +49,7 @@ module Protosite
         end
 
         def set_user_cookie(user)
-          cookies.signed["protosite_user.id"] = user.id
+          cookies.signed["protosite_user.id"] = user['id']
           cookies.signed["protosite_user.expires_at"] = Protosite.configuration.cookie_expiration
         end
     end

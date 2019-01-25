@@ -82,6 +82,12 @@ class Installer {
           get: () => opts.store.state.protosite.currentPage,
           set: (value) => opts.store.commit('currentPage', value, { module: 'protosite' }),
         },
+        home: {
+          get: () => opts.store.getters['protosite/findPage']('home'),
+          set: (_) => {
+            throw(new Error('Unable to set the home page'))
+          },
+        },
       },
       methods: {
         resolve(object, objectType) {
