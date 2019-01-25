@@ -163,10 +163,16 @@ You can do this from the project root.
 - `yarn link`
 - `yarn link "@legwork/vue-protosite"`
 
-Next, you'll want a user to connect with, so run the seeds. This will give you an admin@legworkstudio.com / password
+Next, you'll want a database and a user to connect with, so run the seeds. This will give you an admin@legworkstudio.com / password
 user and login and some default page data.
 
+- `bundle install`
+- `yarn install`
 - `rails app:db:reset`
+
+Create a symlink for node modules
+
+- `cd spec/dummy && ln -s ../../node_modules`
 
 You can start the server with foreman (or whatever you want to do, but this works nice).
 
