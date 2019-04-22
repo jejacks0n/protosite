@@ -1,4 +1,4 @@
-Protosite::User.create!(name: "Admin User", email: "admin@legworkstudio.com", password: "password", admin: true)
+Protosite::User.create!(name: "Admin User", email: "admin@protosite", password: "password", admin: true)
 
 Protosite::Page.build_pages([
   {

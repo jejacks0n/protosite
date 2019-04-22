@@ -16,7 +16,7 @@ The API layer is built with Rails and GraphQL.
 Add it to your `package.json` using yarn or npm.
 
 ```shell
-yarn add https://github.com/legworkstudio/protosite
+yarn add https://github.com/jejacks0n/protosite
 ```
 
 ### API Layer
@@ -24,7 +24,7 @@ yarn add https://github.com/legworkstudio/protosite
 Add it to your gemfile.
 
 ```ruby
-gem "protosite", github: "legworkstudio/protosite"
+gem "protosite", github: "jejacks0n/protosite"
 ```
 
 Get the migrations by running the install task.
@@ -60,7 +60,7 @@ capabilities of the Protosite core. Here's an example for Vue.
 import Vue from 'vue/dist/vue.js'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import VueProtosite from '@legwork/vue-protosite'
+import VueProtosite from '@protosite/vue-protosite'
 
 import App from 'views/app'
 // import Work from 'views/work'
@@ -123,7 +123,7 @@ To enable the editing capabilities you'll need to create another pack. Create a 
 and setup the following.
 
 ```javascript
-import Protosite from '@legwork/vue-protosite/interface'
+import Protosite from '@protosite/vue-protosite/interface'
 
 // You can configure the Protosite interface here and override functionality of
 // any of the base components if you'd like. The Protosite interface exposes
@@ -146,7 +146,6 @@ html
   head
     title Protosite Demo
     link rel="shortcut icon" href="/assets/favicon.ico"
-    meta name="author" content="Legwork"
     = javascript_tag { raw "window.data = #{pages(depth: 5).to_json}" }
     = javascript_pack_tag "application.js"
     = stylesheet_pack_tag "application.css"
@@ -161,9 +160,9 @@ Clone the repo, and have ruby and node installed. To get things setup for develo
 You can do this from the project root.
 
 - `yarn link`
-- `yarn link "@legwork/vue-protosite"`
+- `yarn link "@protosite/vue-protosite"`
 
-Next, you'll want a database and a user to connect with, so run the seeds. This will give you an admin@legworkstudio.com / password
+Next, you'll want a database and a user to connect with, so run the seeds. This will give you an admin@protosite / password
 user and login and some default page data.
 
 - `bundle install`

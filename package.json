@@ -1,7 +1,7 @@
 {
-  "name": "@legwork/vue-protosite",
+  "name": "@protosite/vue-protosite",
   "version": "0.0.1",
-  "author": "Legwork Studio",
+  "author": "jejacks0n",
   "description": "Protosite: An elegant and customizable vue based CMA",
   "license": "MIT",
   "main": "src/vue-protosite/index.js",

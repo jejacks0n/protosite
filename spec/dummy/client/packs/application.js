@@ -2,7 +2,7 @@ import 'styles/application.scss'
 import Vue from 'vue/dist/vue.js'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import VueProtosite from '@legwork/vue-protosite'
+import VueProtosite from '@protosite/vue-protosite'
 
 import App from 'views/app'
 import Work from 'views/work'

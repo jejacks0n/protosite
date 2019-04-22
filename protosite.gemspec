@@ -7,9 +7,9 @@ require "protosite/version"
 Gem::Specification.new do |s|
   s.name        = "protosite"
   s.version     = Protosite::VERSION
-  s.authors     = ["Legwork Studio"]
-  s.email       = ["devs@legworkstudio.com"]
-  s.homepage    = "https://github.com/legworkstudio/protosite"
+  s.authors     = ["jejacks0n"]
+  s.email       = ["jejacks0n@gmail.com"]
+  s.homepage    = "https://github.com/jejacks0n/protosite"
   s.summary     = "Protosite: An elegant and customizable vue based CMA"
   s.description = ["Protosite: An elegant and customizable vue based CMA"].join(" ")
   s.license     = "MIT"
