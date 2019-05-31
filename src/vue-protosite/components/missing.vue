@@ -13,7 +13,7 @@
     name: 'Missing',
     props: ['data'],
     data() {
-      return { schema }
+      return {schema}
     },
   }
 
@@ -34,6 +34,7 @@
     border: 1px solid #000;
     outline: 1px solid #000;
     color: #fff;
+
     div.data {
       font-family: monospace;
       color: #fff;

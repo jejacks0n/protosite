@@ -8,7 +8,7 @@ import {Interface} from './interface'
 let Vue, config, opts
 
 class Instance {
-  constructor({ store, router }) {
+  constructor({store, router}) {
     this.store = store
     this.router = router
 
@@ -29,7 +29,7 @@ class Installer {
       resolver: null,
     }, config, options)
 
-    this.instance = new Instance({ store: opts.store, router: opts.router })
+    this.instance = new Instance({store: opts.store, router: opts.router})
     Vue.prototype['$protosite'] = this.instance
 
     this.installComponents()
@@ -45,7 +45,7 @@ class Installer {
     Vue.component('protosite-headful', Headful)
     Vue.component('protosite-resolver', opts.resolverComponent)
     Vue.component('protosite-page', opts.pageComponent)
-    Vue.component('protosite-toolbar', { render: () => '' })
+    Vue.component('protosite-toolbar', {render: () => ''})
   }
 
   installToStore() {
@@ -80,7 +80,7 @@ class Installer {
       computed: {
         page: {
           get: () => opts.store.state.protosite.currentPage,
-          set: (value) => opts.store.commit('currentPage', value, { module: 'protosite' }),
+          set: (value) => opts.store.commit('currentPage', value, {module: 'protosite'}),
         },
         home: {
           get: () => opts.store.getters['protosite/findPage']('home'),
@@ -127,7 +127,7 @@ class Installer {
         component: opts.resolverComponent,
         children: this.buildRoutesFor(page.pages, page),
         props: true,
-        meta: { page: page },
+        meta: {page: page},
       })
     }
     return routes

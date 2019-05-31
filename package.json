@@ -5,23 +5,27 @@
   "description": "Protosite: An elegant and customizable vue based CMA",
   "license": "MIT",
   "main": "src/vue-protosite/index.js",
-  "files": ["src/**/*"],
+  "files": [
+    "src/**/*"
+  ],
   "dependencies": {
     "@formschema/native": "^2.0.0-alpha.2",
-    "@rails/webpacker": "3.5",
-    "shortid": "^2.2.14",
-    "vue": "^2.5.17",
-    "vue-headful": "^2.0.1",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1",
-    "vuex-router-sync": "^5.0.0"
+    "vue": ">=2.5",
+    "vue-headful": ">=2.0.1",
+    "vue-router": ">=3.0.1",
+    "vuex": ">=3.0.1",
+    "vuex-router-sync": ">=5.0.0"
   },
   "devDependencies": {
+    "@rails/actioncable": ">=6.0.0-alpha",
+    "@rails/activestorage": ">=6.0.0-alpha",
+    "@rails/ujs": ">=6.0.0-alpha",
+    "@rails/webpacker": ">=4.0.4",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.7.0",
-    "vue-loader": "14.2.2",
-    "vue-style-loader": "4.1.2",
-    "vue-template-compiler": "^2.5.17",
-    "webpack-dev-server": ">=3.1.11"
+    "turbolinks": ">=5.2.0",
+    "vue-loader": ">=15.7.0",
+    "vue-template-compiler": ">=2.6.10",
+    "webpack-dev-server": ">=3.4.1"
   }
 }

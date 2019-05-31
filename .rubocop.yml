@@ -12,6 +12,10 @@ Style/FrozenStringLiteralComment:
 Layout/DefEndAlignment:
   EnforcedStyleAlignWith: def
 
+Layout/EmptyLinesAroundBlockBody:
+  Exclude:
+    - spec/dummy/db/schema.rb
+
 AllCops:
   TargetRubyVersion: 2.5.1
   Exclude:

@@ -1,4 +1,3 @@
-import 'styles/application.scss'
 import Vue from 'vue/dist/vue.js'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
@@ -6,7 +5,6 @@ import VueProtosite from '@protosite/vue-protosite'
 
 import App from 'views/app'
 import Work from 'views/work'
-
 import Hero from 'components/hero'
 
 Vue.use(Vuex)
@@ -18,7 +16,7 @@ Vue.use(VueProtosite)
 // pages present Protosite will attempt to load pages from the API.
 const store = new Vuex.Store({
   state: {
-    data: window.data,
+    pages: window.data.pages,
     resolver: {
       'work-template': Work,
       'hero': Hero,
@@ -40,20 +38,12 @@ const router = new VueRouter({
   ],
 })
 
-// Setup protosite. Protosite requires the store and for the store to have a
-// resolver and optionally a pages array.
+// Setup protosite. Protosite requires the vuex store and for the store to have
+// a resolver object and optionally a pages array.
 //
-// Protosite can be instantiated with some configuration options to change
-// behavior as well. To provide any override though, a deep understanding of
-// the implementation is needed.
-//
-// resolverComponent: CustomResolver,
-// pageComponent: CustomPage,
-// storeModule: CUSTOM_STORE,
-// toolbarPack: 'custom_toolbar'
-//
-// If a user is signed in with the correct access privileges, the protosite
-// toolbar will be presented to the user.
+// If a user is signed in with the correct access privileges, the protosite.js
+// pack will be loaded and presented to the user. The Protosite interface can
+// be configured and modified in protosite.js.
 const protosite = new VueProtosite({ store, router, logger: () => null })
 
 // Render the app to the page.

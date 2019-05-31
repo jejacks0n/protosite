@@ -10,7 +10,7 @@ export const STORE = {
   },
   actions: {
     // TODO: if this is empty, we should assume we need to load pages via the api?
-    setPages: ({ commit }, array) => commit('setPages', array),
+    setPages: ({commit}, array) => commit('setPages', array),
   },
   mutations: {
     currentUser: (state, currentUser) => state.currentUser = currentUser,

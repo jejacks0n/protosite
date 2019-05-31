@@ -45,11 +45,11 @@ module Protosite
         end
 
         def protosite_pack_src
-          sources_from_pack_manifest(["protosite.js"], type: :javascript)[0]
+          asset_pack_path("protosite.js")
         end
 
         def set_user_cookie(user)
-          cookies.signed["protosite_user.id"] = user['id']
+          cookies.signed["protosite_user.id"] = user["id"]
           cookies.signed["protosite_user.expires_at"] = Protosite.configuration.cookie_expiration
         end
     end

@@ -1,3 +1,4 @@
+# This migration comes from protosite (originally 20181020102030)
 class CreateProtositeTables < ActiveRecord::Migration[5.2]
   def up
     create_table :protosite_users do |t|

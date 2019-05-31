@@ -10,7 +10,7 @@
   export default {
     name: 'Page',
     data() {
-      return { schema }
+      return {schema}
     },
   }
 
@@ -41,6 +41,3 @@
     },
   }
 </script>
-
-<style scoped lang="scss">
-</style>

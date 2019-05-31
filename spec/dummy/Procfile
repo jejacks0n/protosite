@@ -1,2 +1,2 @@
-rails: rm -f tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0 -p 3000
+rails: which rails && rm -f tmp/pids/server.pid && bundle exec ./bin/rails s -b 0.0.0.0 -p 3000
 webpack: ./bin/webpack-dev-server

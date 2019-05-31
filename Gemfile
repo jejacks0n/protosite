@@ -6,7 +6,7 @@ gem "rails", ">= 5.2.1"
 gemspec
 
 group :development, :test do
-  gem "rubocop", require: false
+  gem "rubocop", "0.60", require: false
   gem "rubocop-rails_config"
 
   # dummy app
@@ -14,7 +14,7 @@ group :development, :test do
   gem "sqlite3"
   gem "slim-rails"
   gem "sassc-rails"
-  gem "webpacker"
+  gem "webpacker", "~> 4.0"
   gem "uglifier"
   gem "foreman", require: false
 

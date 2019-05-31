@@ -18,12 +18,9 @@
 
   export default {
     name: 'App',
-    components: { Navigation },
+    components: {Navigation},
     computed: {
       ...mapState(['pages']),
     },
   }
 </script>
-
-<style scoped lang="scss">
-</style>

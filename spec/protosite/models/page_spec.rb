@@ -3,7 +3,7 @@ require "spec_helper"
 describe Protosite::Page, type: :model do
   subject { build(:page, parent_id: "666") }
 
-  it { is_expected.to belong_to(:parent) }
+  it { is_expected.to belong_to(:parent).required(false) }
   it { is_expected.to have_many(:children).dependent(:destroy) }
 
   it { is_expected.to validate_presence_of(:slug).with_message("can't be blank -- provide a title or slug in data") }

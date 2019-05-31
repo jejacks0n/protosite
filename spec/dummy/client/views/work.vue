@@ -2,7 +2,9 @@
   <section class="work">
     <slot name="protosite" :schema="schema"/>
     <h1>{{page.title}}</h1>
-    <h2 :style="{backgroundColor: page.color}">here's some custom stuff, with a link to a [<a href="/borken">broken page</a>]</h2>
+    <h2 :style="{backgroundColor: page.color}">
+      <span>here's some custom stuff, with a link to a [<a href="/borken">broken page</a>]</span>
+    </h2>
     <ul>
       <li v-for="child in page.children" :key="child.id">
         <router-link :to="child.fullPath">{{child.title}} - {{child.description}}</router-link>
@@ -15,7 +17,7 @@
   export default {
     name: 'Work',
     data() {
-      return { schema }
+      return {schema}
     },
     methods: {
       persistPage() {
@@ -51,6 +53,3 @@
     },
   }
 </script>
-
-<style scoped lang="scss">
-</style>
