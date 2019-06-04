@@ -81,8 +81,6 @@ You can start the server with foreman (or whatever you want to do, but this work
 
 - `foreman start -f spec/dummy/Procfile`
 
-http://localhost:3000/protosite
-
 After you have the server, you can [login to protosite](http://localhost:3000/protosite) (admin@protosite / password).
 You can browse to [the graphiql interface](http://localhost:3000/protosite/graphiql) to inspect the schema and to run
 test queries etc.
