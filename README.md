@@ -2,6 +2,8 @@ Protosite
 =========
 
 [![Build Status](https://travis-ci.org/jejacks0n/protosite.svg?branch=master)](https://travis-ci.org/jejacks0n/protosite)
+[![Maintainability](https://api.codeclimate.com/v1/badges/2fe64b2099900239713a/maintainability)](https://codeclimate.com/github/jejacks0n/protosite/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/2fe64b2099900239713a/test_coverage)](https://codeclimate.com/github/jejacks0n/protosite/test_coverage)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
