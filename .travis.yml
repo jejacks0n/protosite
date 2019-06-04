@@ -17,7 +17,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
   - yarn link && yarn link "@protosite/vue-protosite"
-  - cd spec/dummy && bundle exec rake webpacker:compile
+  #- cd spec/dummy && bundle exec rake webpacker:compile && cd ../..
 script:
   - bundle exec rake
 after_script:
