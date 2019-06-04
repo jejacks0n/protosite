@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_30_185319) do
+ActiveRecord::Schema.define(version: 2018_10_20_102030) do
 
   create_table "protosite_pages", id: :string, force: :cascade do |t|
     t.string "parent_id"
