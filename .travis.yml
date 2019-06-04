@@ -8,12 +8,12 @@ env:
   global:
     - TRAVIS=true
     - DISPLAY=:99.0
+before_install:
+  - gem install bundler
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
-before_install:
-  - gem install bundler
   - bundle exec rails webpacker:compile
 script:
   - bundle exec rake
