@@ -6,7 +6,7 @@ SimpleCov.start do
 
   add_filter { |src| !(src.filename =~ /protosite\//) }
   add_filter [
-    "gemfiles", # gems are installed here
+    "bundler/gems", # gems are installed here
   ]
 end
 
