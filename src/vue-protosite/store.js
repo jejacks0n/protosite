@@ -22,6 +22,7 @@ export const GRAPHQL_QUERIES = {
     }`,
 }
 
+let resolvedItems = []
 export const STORE_MODULE = {
   namespaced: true,
   state: {
@@ -32,11 +33,19 @@ export const STORE_MODULE = {
     pagesFlat: [],
   },
   actions: {
-    resolveCurrentUser({commit}, data) {
-      return resolveApi(commit, data, 'currentUser')
+    async resolveCurrentUser({commit, dispatch}, data) {
+      if (data.currentUser !== null) { // don't check if not needed
+        await resolveApi(commit, data, 'currentUser')
+      }
+      dispatch('resolved', 'currentUser')
     },
-    resolvePages({commit}, data) {
-      return resolveApi(commit, data, 'pages')
+    async resolvePages({commit, dispatch}, data) {
+      await resolveApi(commit, data, 'pages')
+      dispatch('resolved', 'pages')
+    },
+    resolved({commit}, resolution) {
+      resolvedItems.push(resolution)
+      if (resolvedItems.length >= 4) commit('loaded')
     },
   },
   mutations: {
@@ -72,7 +81,7 @@ export const PAGE_PROPERTIES = {
     title: 'Slug title',
     help: 'The slug will determine the path at which this page is accessible. Leave blank to default from the title. Allowed characters are letters, numbers and dashes.',
     maxLength: 100,
-    pattern: "[0-9A-Za-z-]",
+    pattern: '[0-9A-Za-z-]',
   },
   description: {
     type: 'string',

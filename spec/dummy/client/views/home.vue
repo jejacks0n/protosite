@@ -1,11 +1,11 @@
 <template>
   <section class="home">
-    <slot name="protosite" :schema="schema"/>
     <h1>{{protositePage.title}}</h1>
     <div :style="{backgroundColor: protositePage.data.color}">
       <h2>here's some custom content for the home page</h2>
       <slot name="components"/>
     </div>
+    <slot name="protosite" :schema="schema"/>
     <ul>
       <li v-for="page in protositePage.pages" :key="page.id">
         <router-link :to="page.path">{{page.data.title}} - {{page.description || 'No description'}}</router-link>

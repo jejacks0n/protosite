@@ -3,7 +3,6 @@ import {sync} from 'vuex-router-sync'
 import {Resolver, Missing, Headful, Page} from './components'
 import {STORE_MODULE, GRAPHQL_QUERIES, PAGE_PROPERTIES} from './store'
 import {Logger} from './logger'
-import {Interface} from './interface'
 
 let Vue, config, opts, state
 
@@ -14,9 +13,25 @@ class Instance {
 
     if (store && router) sync(store, router)
   }
+
+  resolvePageFor(route) {
+    let meta = route.meta
+    let page = (meta && meta.page)
+    meta.page = page = (typeof page === 'string') ? opts.store.getters['protosite/findPage'](page) : page
+
+    const title = (page && page.data) ? page.data.title : null
+    opts.logger('Setting page:', title || 'Unknown', page)
+    opts.store.commit('protosite/page', page)
+  }
 }
 
 class Installer {
+  static install(V, c = {}) {
+    Logger.log('Installing...')
+    Vue = V
+    config = c
+  }
+
   constructor(options) {
     opts = Object.assign({
       store: null, // required
@@ -39,6 +54,7 @@ class Installer {
     // Setup state so we can access it cleanly.
     state = opts.store.state
     state.data = state.data || {}
+    state.data.currentUser = state.data.currentUser || null
 
     // Instantiate the protosite instance (with limited access to objects) and
     // provide access to it via this.$protosite within components.
@@ -64,7 +80,6 @@ class Installer {
       opts.store.registerModule('protosite', opts.storeModule)
       opts.store.dispatch('protosite/resolvePages', state.data).then(() => {
         this.addRoutes()
-        opts.store.commit('protosite/loaded', true)
       })
     } else {
       Logger.error('There was no way to register with the store, did you provide a valid store?')
@@ -75,10 +90,14 @@ class Installer {
   installComponents() {
     opts.logger('Adding components for rendering.')
 
+    // Rendering components.
     Vue.component('protosite-headful', Headful)
     Vue.component('protosite-resolver', opts.resolverComponent)
     Vue.component('protosite-page', opts.pageComponent)
+
+    // Placeholder components.
     Vue.component('protosite-toolbar', {render: () => ''})
+    Vue.component('protosite-controls', {render: () => ''})
   }
 
   installMixins() {
@@ -125,55 +144,49 @@ class Installer {
   installInterface() {
     opts.store.dispatch('protosite/resolveCurrentUser', state.data).then(() => {
       const pack = state.protosite.currentUser ? state.protosite.currentUser.pack : null
-      if (!pack) return
+      if (pack) {
+        opts.logger('Installing Protosite interface.')
 
-      opts.logger('Installing Protosite interface.')
-
-      if (opts.interface) {
-        opts.interface(Vue, opts)
-      } else if (typeof document !== 'undefined') {
-        var s = document.createElement('script')
-        s.type = 'text/javascript'
-        s.onload = () => Protosite(Vue, opts)
-        s.src = pack
-        document.head.appendChild(s)
+        if (opts.interface) {
+          opts.interface(Vue, opts)
+        } else if (typeof document !== 'undefined') {
+          var s = document.createElement('script')
+          s.type = 'text/javascript'
+          s.onload = () => {
+            Protosite(Vue, opts)
+            opts.store.dispatch('protosite/resolved', 'interface')
+          }
+          s.src = pack
+          document.head.appendChild(s)
+        }
+      } else {
+        opts.store.dispatch('protosite/resolved', 'interface')
       }
     })
   }
 
   addRoutes() {
-    if (!opts.router.addRoutes) return
+    if (opts.router.addRoutes) {
+      opts.logger('Building and adding routes.')
 
-    opts.logger('Building and adding routes.')
+      let routes = this.buildRoutesFor(state.protosite.pages)
+      if (opts.missingPage) routes.push(opts.missingPage)
 
-    let routes = this.buildRoutesFor(state.protosite.pages)
-    if (opts.missingPage) {
-      routes.push(opts.missingPage)
-    }
+      opts.router.addRoutes(routes)
 
-    const resolvePage = (meta) => {
-      let page = (meta && meta.page)
-      meta.page = page = (typeof page === 'string') ? opts.store.getters['protosite/findPage'](page) : page
+      opts.router.beforeEach((to, from, next) => {
+        this.instance.resolvePageFor(to)
+        next()
+      })
 
-      const title = (page && page.data) ? page.data.title : null
-      opts.logger('Setting page:', title || 'Unknown', page)
-      opts.store.commit('protosite/page', page)
-    }
-
-    opts.router.addRoutes(routes)
-
-    opts.router.beforeEach((to, from, next) => {
-      resolvePage(to.meta)
-      next()
-    })
-
-    if (!state.data.pages) { // force resolving the page for the initial load
       opts.router.onReady(() => {
-        let meta = opts.router.app.$route ? opts.router.app.$route.meta : null
-        meta = meta || opts.router.history.current.meta
-        resolvePage(meta)
+        if (!state.data.pages) { // force resolving the page for the initial load
+          this.instance.resolvePageFor(opts.router.app.$route || opts.router.history.current)
+        }
       })
     }
+
+    opts.store.dispatch('protosite/resolved', 'routes')
   }
 
   buildRoutesFor(array, parent = null) {
@@ -192,12 +205,6 @@ class Installer {
     }
     return routes
   }
-
-  static install(V, c = {}) {
-    Logger.log('Installing...')
-    Vue = V
-    config = c
-  }
 }
 
 Installer.Resolver = Resolver
@@ -207,7 +214,6 @@ Installer.Headful = Headful
 export default Installer
 export {
   Instance,
-  Interface,
   Resolver,
   Page,
   Headful,

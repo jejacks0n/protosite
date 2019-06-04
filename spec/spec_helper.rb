@@ -21,6 +21,12 @@ Dir[File.expand_path("../support/**/*.rb", __FILE__)].each { |f| require f }
 ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
+  config.include Warden::Test::Helpers
+
   config.color = true
   config.use_transactional_fixtures = true
+
+  config.after do
+    Warden.test_reset!
+  end
 end

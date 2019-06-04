@@ -25,7 +25,7 @@ after_bundle do
 
   say "Adding Protosite boiler plate code"
   file "app/javascript/packs/protosite.js", <<-JAVASCRIPT.strip_heredoc
-    import {Interface as Protosite} from '@protosite/vue-protosite'
+    import {Interface as Protosite} from '@protosite/vue-protosite/src/vue-protosite/interface'
 
     // You can configure the Protosite interface here and override functionality of
     // any of the base components if you'd like. The Protosite interface exposes
@@ -135,12 +135,12 @@ after_bundle do
   file "app/javascript/views/home.vue", <<-VUE.strip_heredoc
     <template>
       <section class="home">
-        <slot name="protosite" :schema="schema"/>
         <h1>{{protositePage.title}}</h1>
         <div :style="{backgroundColor: protositePage.data.color}">
           <h2>here's some custom content for the home page</h2>
           <slot name="components"/>
         </div>
+        <h1>{{protositePage.title}}</h1>
         <ul>
           <li v-for="page in protositePage.pages" :key="page.id">
             <router-link :to="page.path">{{page.data.title}} - {{page.description || 'No description'}}</router-link>
