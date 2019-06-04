@@ -66,7 +66,7 @@ of `admin@protosite` / `password` and some default page data.
 
 - `bundle install`
 - `yarn install`
-- `rake app:db:reset app:db:test:prepare`
+- `rake app:db:reset`
 
 Create a symlink for node modules.
 
@@ -81,8 +81,11 @@ You can start the server with foreman (or whatever you want to do, but this work
 
 - `foreman start -f spec/dummy/Procfile`
 
-After you have the server, you can browse to [the graphiql interface](http://localhost:3000/protosite/graphiql) to
-inspect the schema and to run test queries etc.
+http://localhost:3000/protosite
+
+After you have the server, you can [login to protosite](http://localhost:3000/protosite) (admin@protosite / password).
+You can browse to [the graphiql interface](http://localhost:3000/protosite/graphiql) to inspect the schema and to run
+test queries etc.
 
 
 ## License
