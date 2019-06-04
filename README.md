@@ -58,8 +58,7 @@ keep a certain level of simplicity.
 Clone the repo, and have ruby and node installed. To get things setup for development you need to link the node package.
 You can do this from the project root.
 
-- `yarn link`
-- `yarn link "@protosite/vue-protosite"`
+- `yarn link && yarn link "@protosite/vue-protosite"`
 
 Next, you'll want a database and a user to connect with, so run the seeds. This will give you an admin, with the login
 of `admin@protosite` / `password` and some default page data.

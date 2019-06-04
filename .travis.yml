@@ -16,6 +16,7 @@ before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
+  - yarn link && yarn link "@protosite/vue-protosite"
   - cd spec/dummy && bundle exec rake webpacker:compile
 script:
   - bundle exec rake
