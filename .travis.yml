@@ -14,6 +14,7 @@ before_script:
   - ./cc-test-reporter before-build
 before_install:
   - gem install bundler
+  - bundle exec rails webpacker:compile
 script:
   - bundle exec rake
 after_script:
