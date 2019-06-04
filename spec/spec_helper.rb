@@ -5,6 +5,9 @@ SimpleCov.start do
   filters.clear
 
   add_filter { |src| !(src.filename =~ /protosite\//) }
+  add_filter [
+    "gemfiles", # gems are installed here
+  ]
 end
 
 ENV["RAILS_ENV"] ||= "test"

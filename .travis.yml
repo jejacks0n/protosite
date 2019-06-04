@@ -4,10 +4,6 @@ rvm:
   - 2.5.1
 addons:
   chrome: stable
-env:
-  global:
-    - TRAVIS=true
-    - DISPLAY=:99.0
 before_install:
   - gem install bundler
   - yarn install
