@@ -41,24 +41,9 @@ After installation, you can configure it in your initializers (`config/initializ
 review and make changes to the basic client implementation in the `application.js` file and editor implementation in the
 `protosite.js` file.
 
-### API Layer
-
-In the view you can use the `pages(depth: 2, attrs: 'id, data')` helper method to statically load in the pages. You can
-specify the depth and which attributes to query.
-
-```slim
-doctype html
-html
-  head
-    title Protosite Demo
-    link rel="shortcut icon" href="/assets/favicon.ico"
-    = javascript_tag { raw "window.data = #{pages(depth: 5).to_json}" }
-    = javascript_pack_tag "application.js"
-    = stylesheet_pack_tag "application.css"
-  body
-    div#root
-      App.application
-```
+The plan is to get things working nicely and then provide documentation and tutorials on how to customize all aspects of
+Protosite. Protosite is written at a core level in such a way that makes customization possible, with the intent to also
+keep a certain level of simplicity.
 
 
 ## Development / Contributing
@@ -91,11 +76,6 @@ You can start the server with foreman (or whatever you want to do, but this work
 
 After you have the server, you can browse to [the graphiql interface](http://localhost:3000/protosite/graphiql) to
 inspect the schema and to run test queries etc.
-
-#### Notes / Todo:
-
-The api allows loading the page hierarchy -- parents, and child pages, and while the parent part is versionable, the
-children aren't yet, unless we query inside the json.
 
 
 ## License
