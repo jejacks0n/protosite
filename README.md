@@ -74,7 +74,7 @@ of `admin@protosite` / `password` and some default page data.
 
 - `bundle install`
 - `yarn install`
-- `rake app:db:reset`
+- `rake app:db:reset app:db:test:prepare`
 
 Create a symlink for node modules.
 

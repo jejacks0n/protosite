@@ -21,6 +21,12 @@ describe Protosite::Types::UserType do
       expect(subject.token).to be_nil
     end
 
+    it "only provides the interface packs for admin users" do
+      expect(subject.pack).to be_nil
+      user.admin = true
+      expect(subject.pack).to match %r{/packs-test/js/protosite-[\w]{20}.js}
+    end
+
     it "only includes permissions that are true (as to not expose permission names to users who don't have them)" do
       user.permissions = { create_page: false, publish_page: true, remove_page: false, update_self: false }
       user.admin = true

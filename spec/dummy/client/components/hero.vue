@@ -11,7 +11,7 @@
     name: 'Hero',
     props: ['data'],
     data() {
-      return { schema }
+      return {schema}
     },
   }
 
@@ -54,17 +54,10 @@
 <style scoped lang="scss">
   article.hero {
     min-height: 50px;
+
     &.fifty-fifty {
       display: grid;
       grid-template-columns: 1fr 2fr;
-    }
-  }
-
-  article.protosite-controls {
-    position: static;
-    display: inline-block;
-    /deep/ button {
-
     }
   }
 </style>

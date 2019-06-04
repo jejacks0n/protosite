@@ -4,8 +4,6 @@ module Protosite
   module Mixins
     module Controller
       extend ActiveSupport::Concern
-      include Webpacker::Helper
-      include ActionView::Helpers::AssetUrlHelper
 
       included do
         helper_method :protosite_data, :current_user
@@ -16,7 +14,7 @@ module Protosite
         def protosite_data(depth: 1)
           data = pages(depth: depth)
           return data unless current_user
-          data.merge("protositePackSrc": protosite_pack_src, "currentUser": serialized_user)
+          data.merge("currentUser": serialized_user)
         end
 
         def current_user
@@ -40,12 +38,8 @@ module Protosite
         end
 
         def serialized_user
-          res = Protosite::Schema.run("currentUser {id, email, name, permissions}", current_user: current_user)
+          res = Protosite::Schema.run("currentUser {id, email, name, pack, permissions}", current_user: current_user)
           res.dig("data", "currentUser")
-        end
-
-        def protosite_pack_src
-          asset_pack_path("protosite.js")
         end
 
         def set_user_cookie(user)

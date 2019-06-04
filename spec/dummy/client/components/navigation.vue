@@ -12,10 +12,7 @@
 
   export default {
     name: 'Navigation',
-    components: { Navigation },
-    props: ['pages', 'depth']
+    components: {Navigation},
+    props: ['pages', 'depth'],
   }
 </script>
-
-<style scoped lang="scss">
-</style>

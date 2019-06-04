@@ -1,0 +1,60 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+"All mutations for the Protosite API."
+type Mutation {
+  createPage(data: Json!): Page
+  createUser(email: String!, name: String!, password: String!): User
+  publishPage(id: ID!): Page
+  removePage(id: ID!): Page
+  updateCurrentUser(email: String, password: String): User
+  updatePage(data: Json!, id: ID!): Page
+}
+
+type Notification {
+  message: String!
+}
+
+type Page {
+  data: Json!
+  id: ID!
+  pages: [Page!]
+  parent: Page
+  slug: String!
+  sort: String!
+  versions: [Json!]!
+}
+
+"All queries for the Protosite API."
+type Query {
+  currentUser: User
+  page(id: ID!): Page
+  pages: [Page!]
+}
+
+"All Protosite event subscriptions."
+type Subscription {
+  notification: Notification
+  pageCreated: Page
+  pageRemoved: Page
+  pageUpdated: Page
+  userCreated: User
+  userUpdated(id: ID!): User
+}
+
+type User {
+  email: String!
+  id: ID!
+  name: String!
+  pack: String
+  permissions: Json
+  token: String
+}
+
+
+scalar Json

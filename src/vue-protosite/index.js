@@ -1,11 +1,11 @@
 import {sync} from 'vuex-router-sync'
 
 import {Resolver, Missing, Headful, Page} from './components'
-import {STORE} from './store'
+import {STORE_MODULE, GRAPHQL_QUERIES, PAGE_PROPERTIES} from './store'
 import {Logger} from './logger'
 import {Interface} from './interface'
 
-let Vue, config, opts
+let Vue, config, opts, state
 
 class Instance {
   constructor({store, router}) {
@@ -24,19 +24,52 @@ class Installer {
       resolverComponent: Resolver,
       pageComponent: Page,
       missingComponent: Missing,
-      storeModule: STORE,
+      missingPage: null,
+      storeModule: STORE_MODULE,
       logger: Logger.log,
       resolver: null,
     }, config, options)
 
+    // Ensure required options are present.
+    if (!opts.store) {
+      Logger.error('You must provide a store.')
+      throw new Error('Protosite: Unable to use provided store')
+    }
+
+    // Setup state so we can access it cleanly.
+    state = opts.store.state
+    state.data = state.data || {}
+
+    // Instantiate the protosite instance (with limited access to objects) and
+    // provide access to it via this.$protosite within components.
     this.instance = new Instance({store: opts.store, router: opts.router})
     Vue.prototype['$protosite'] = this.instance
 
-    this.installComponents()
+    // Default more complex options.
+    if (opts.missingPage === null) { // if no a catchall, use `false`.
+      opts.missingPage = {path: '*', component: opts.resolverComponent, meta: {page: opts.missingPage}}
+    }
+
+    // Install Protosite at various levels.
     this.installToStore()
-    this.installToRouter()
-    this.installMixins()
+    this.installComponents()
     this.installInterface()
+    this.installMixins()
+  }
+
+  installToStore() {
+    opts.logger('Registering the store module.')
+
+    if (opts.store.registerModule) {
+      opts.store.registerModule('protosite', opts.storeModule)
+      opts.store.dispatch('protosite/resolvePages', state.data).then(() => {
+        this.addRoutes()
+        opts.store.commit('protosite/loaded', true)
+      })
+    } else {
+      Logger.error('There was no way to register with the store, did you provide a valid store?')
+      throw new Error('Protosite: Unable to use provided store')
+    }
   }
 
   installComponents() {
@@ -48,44 +81,32 @@ class Installer {
     Vue.component('protosite-toolbar', {render: () => ''})
   }
 
-  installToStore() {
-    opts.logger('Registering the store module.')
-
-    if (opts.store.registerModule) {
-      opts.store.registerModule('protosite', opts.storeModule)
-      opts.store.dispatch('protosite/setPages', opts.store.state.data.pages)
-    } else {
-      Logger.error('There was no way to register with the store, did you provide one in configuration or options?')
-      throw new Error('Protosite: Unable to use provided store')
-    }
-  }
-
-  installToRouter() {
-    opts.logger('Building and adding routes.')
-
-    opts.router.addRoutes(this.buildRoutesFor(opts.store.state.protosite.pages))
-    opts.router.beforeEach((to, from, next) => {
-      let page = (to.meta && to.meta.page)
-      to.meta.page = page = (typeof page === 'string') ? opts.store.getters['protosite/findPage'](page) : page
-      opts.logger('Setting page:', page)
-      opts.store.commit('protosite/currentPage', page)
-      next()
-    })
-  }
-
   installMixins() {
     opts.logger('Installing base mixins.')
 
     Vue.mixin({
       computed: {
-        page: {
-          get: () => opts.store.state.protosite.currentPage,
-          set: (value) => opts.store.commit('currentPage', value, {module: 'protosite'}),
+        protositeLoading: {
+          get() {
+            return state.protosite.loading
+          },
         },
-        home: {
-          get: () => opts.store.getters['protosite/findPage']('home'),
-          set: (_) => {
-            throw(new Error('Unable to set the home page'))
+        protositePages: {
+          get() {
+            return state.protosite.pages
+          },
+        },
+        protositePage: {
+          get() {
+            return state.protosite.page
+          },
+          set(value) {
+            return opts.store.commit('page', value, {module: 'protosite'})
+          },
+        },
+        protositeHome: {
+          get() {
+            return opts.store.getters['protosite/findPage']('home')
           },
         },
       },
@@ -93,7 +114,7 @@ class Installer {
         resolve(object, objectType) {
           if (!object) return 'div'
           const type = object.type || (object.data ? object.data.type : null)
-          const resolver = opts.resolver || opts.store.state.resolver
+          const resolver = opts.resolver || state.resolver
           const fallback = (objectType === 'page') ? opts.pageComponent : opts.missingComponent
           return resolver[type] || resolver[`default-${objectType}-type`] || fallback
         },
@@ -102,17 +123,56 @@ class Installer {
   }
 
   installInterface() {
-    if (!opts.store.state.data.currentUser) return
-    opts.logger('Installing toolbar interface.')
+    opts.store.dispatch('protosite/resolveCurrentUser', state.data).then(() => {
+      const pack = state.protosite.currentUser ? state.protosite.currentUser.pack : null
+      if (!pack) return
 
-    if (opts.interface) {
-      opts.interface(Vue, opts)
-    } else if (typeof document !== 'undefined' && opts.store.state.data.protositePackSrc) {
-      var s = document.createElement('script')
-      s.type = 'text/javascript'
-      s.onload = () => Protosite(Vue, opts)
-      s.src = opts.store.state.data.protositePackSrc
-      document.head.appendChild(s)
+      opts.logger('Installing Protosite interface.')
+
+      if (opts.interface) {
+        opts.interface(Vue, opts)
+      } else if (typeof document !== 'undefined') {
+        var s = document.createElement('script')
+        s.type = 'text/javascript'
+        s.onload = () => Protosite(Vue, opts)
+        s.src = pack
+        document.head.appendChild(s)
+      }
+    })
+  }
+
+  addRoutes() {
+    if (!opts.router.addRoutes) return
+
+    opts.logger('Building and adding routes.')
+
+    let routes = this.buildRoutesFor(state.protosite.pages)
+    if (opts.missingPage) {
+      routes.push(opts.missingPage)
+    }
+
+    const resolvePage = (meta) => {
+      let page = (meta && meta.page)
+      meta.page = page = (typeof page === 'string') ? opts.store.getters['protosite/findPage'](page) : page
+
+      const title = (page && page.data) ? page.data.title : null
+      opts.logger('Setting page:', title || 'Unknown', page)
+      opts.store.commit('protosite/page', page)
+    }
+
+    opts.router.addRoutes(routes)
+
+    opts.router.beforeEach((to, from, next) => {
+      resolvePage(to.meta)
+      next()
+    })
+
+    if (!state.data.pages) { // force resolving the page for the initial load
+      opts.router.onReady(() => {
+        let meta = opts.router.app.$route ? opts.router.app.$route.meta : null
+        meta = meta || opts.router.history.current.meta
+        resolvePage(meta)
+      })
     }
   }
 
@@ -145,4 +205,14 @@ Installer.Page = Page
 Installer.Headful = Headful
 
 export default Installer
-export {Instance, Interface, Resolver, Page, Headful}
+export {
+  Instance,
+  Interface,
+  Resolver,
+  Page,
+  Headful,
+  // constants
+  STORE_MODULE,
+  GRAPHQL_QUERIES,
+  PAGE_PROPERTIES,
+}

@@ -1,4 +1,5 @@
-class CreateProtositeTables < ActiveRecord::Migration[5.2]
+# This migration comes from protosite (originally 20181020102030)
+class CreateTables < ActiveRecord::Migration[5.2]
   def up
     create_table :protosite_users do |t|
       t.string :name, null: false
@@ -51,6 +52,8 @@ class CreateProtositeTables < ActiveRecord::Migration[5.2]
       {
         title: "Home Page",
         slug: "", # we can leave this blank for the home page
+        type: "home-page", # we want home to use a special template
+        color: "#eee", # our custom home template can handle color!
         components: [
           {
             type: "hero",

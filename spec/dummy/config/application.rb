@@ -20,6 +20,7 @@ module Dummy
     config.eager_load = Rails.env.production?
     config.cache_classes = !Rails.env.production?
     config.consider_all_requests_local = Rails.env.development?
+    config.action_dispatch.cookies_serializer = :json
   end
 end
 

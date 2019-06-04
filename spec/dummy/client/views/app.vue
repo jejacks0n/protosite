@@ -1,26 +1,23 @@
 <template>
-  <section class="application">
+  <section v-if="protositeLoading" class="loading">loading...</section>
+  <section v-else class="application">
     <h1>Protosite Demo</h1>
     <nav>
-      <navigation :pages="pages" depth="5"/>
+      <navigation :pages="protositePages" depth="5"/>
     </nav>
     <section class="content">
       <transition name="page">
-        <router-view/>
+        <router-view :key="protositePage.slug"/>
       </transition>
     </section>
   </section>
 </template>
 
 <script>
-  import {mapState} from 'vuex'
   import Navigation from 'components/navigation'
 
   export default {
     name: 'App',
     components: {Navigation},
-    computed: {
-      ...mapState(['pages']),
-    },
   }
 </script>

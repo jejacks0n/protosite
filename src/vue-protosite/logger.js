@@ -15,5 +15,5 @@ export const Logger = {
     } else {
       console.log(`%cProto%csite%c: %c${messages.join(' ')}`, ...styles, '', options.style || '')
     }
-  }
+  },
 }
