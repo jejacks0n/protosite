@@ -9,3 +9,4 @@ spec/dummy/node_modules/
 spec/dummy/public/packs
 spec/dummy/public/packs-test
 spec/dummy/tmp/
+coverage/

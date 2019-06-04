@@ -26,4 +26,5 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "shoulda-matchers"
   gem "rspec-graphql_matchers", github: "jejacks0n/rspec-graphql_matchers"
+  gem "simplecov", require: false
 end
