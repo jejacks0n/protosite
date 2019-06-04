@@ -37,4 +37,4 @@ end
 Rake::Task["default"].prerequisites.clear
 Rake::Task["default"].clear
 
-task default: [:rubocop, :spec]
+task default: [:rubocop, "app:db:test:prepare", :spec]

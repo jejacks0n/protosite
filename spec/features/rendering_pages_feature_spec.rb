@@ -20,7 +20,7 @@ describe "Rendering pages", type: :feature do
     ])
   end
 
-  it "shows page details and components", :js do
+  it "shows page details and components" do
     visit "/"
 
     expect(page).to have_content "Protosite Demo"
@@ -43,4 +43,10 @@ describe "Rendering pages", type: :feature do
       expect(page).to have_content "About us"
     end
   end
+
+  it "renders the toolbar if I'm an admin"
+  it "allows me to update the home page properties"
+  it "allows navigating to other pages"
+  it "retains versions of the content when I change it"
+  it "allows me to move pages from one parent to another"
 end

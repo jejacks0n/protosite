@@ -1,6 +1,13 @@
 Protosite
 =========
 
+[![Build Status](https://travis-ci.org/jejacks0n/protosite.svg?branch=master)](https://travis-ci.org/jejacks0n/protosite)
+[![Maintainability](https://api.codeclimate.com/v1/badges/2fe64b2099900239713a/maintainability)](https://codeclimate.com/github/jejacks0n/protosite/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/2fe64b2099900239713a/test_coverage)](https://codeclimate.com/github/jejacks0n/protosite/test_coverage)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
+
+
 Protosite is a CMA/CMS that's comprised of a client layer and an API layer that can be used together, or in their
 component parts.
 
@@ -51,15 +58,14 @@ keep a certain level of simplicity.
 Clone the repo, and have ruby and node installed. To get things setup for development you need to link the node package.
 You can do this from the project root.
 
-- `yarn link`
-- `yarn link "@protosite/vue-protosite"`
+- `yarn link && yarn link "@protosite/vue-protosite"`
 
 Next, you'll want a database and a user to connect with, so run the seeds. This will give you an admin, with the login
 of `admin@protosite` / `password` and some default page data.
 
 - `bundle install`
 - `yarn install`
-- `rake app:db:reset app:db:test:prepare`
+- `rake app:db:reset`
 
 Create a symlink for node modules.
 
@@ -74,8 +80,9 @@ You can start the server with foreman (or whatever you want to do, but this work
 
 - `foreman start -f spec/dummy/Procfile`
 
-After you have the server, you can browse to [the graphiql interface](http://localhost:3000/protosite/graphiql) to
-inspect the schema and to run test queries etc.
+After you have the server, you can [login to protosite](http://localhost:3000/protosite) (admin@protosite / password).
+You can browse to [the graphiql interface](http://localhost:3000/protosite/graphiql) to inspect the schema and to run
+test queries etc.
 
 
 ## License
