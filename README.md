@@ -55,23 +55,23 @@ keep a certain level of simplicity.
 
 ## Development / Contributing
 
-Clone the repo, and have ruby and node installed. To get things setup for development you need to link the node package.
-You can do this from the project root.
+Clone the repo, and have ruby and node installed. Install dependencies for development using bundler and yarn.
 
-- `yarn link && yarn link "@protosite/vue-protosite"`
+- `bundle install` to install ruby dependencies
+- `yarn unlink` (just in case)
+- `yarn link && yarn link "@protosite/vue-protosite"` to use the local package in dev
+- `yarn install` to install node dependencies
 
-Next, you'll want a database and a user to connect with, so run the seeds. This will give you an admin, with the login
-of `admin@protosite` / `password` and some default page data.
-
-- `bundle install`
-- `yarn install`
-- `rake app:db:reset`
-
-Create a symlink for node modules.
+Next, because of how node_modules works, we need to link it inside our test app.
 
 - `ln -s spec/dummy/node_modules node_modules`
 
-You should now be able to run the specs.
+Next, you'll want a database with a user and some page data. This will give you an admin user, with the login of
+`admin@protosite` / `password` and some default page data that's good for examples.
+
+- `rake app:db:migrate`
+
+Now you should now be able to run the specs.
 
 - `rake` to run rubocop and the specs
 - `rake spec` to just run the specs
@@ -80,8 +80,11 @@ You can start the server with foreman (or whatever you want to do, but this work
 
 - `foreman start -f spec/dummy/Procfile`
 
-After you have the server, you can [login to protosite](http://localhost:3000/protosite) (admin@protosite / password).
-You can browse to [the graphiql interface](http://localhost:3000/protosite/graphiql) to inspect the schema and to run
+After you have the server running locally, you can [login to protosite](http://localhost:3000/protosite) locally using
+`admin@protosite` / `password` login. This will redirect you back to the root of the application which has a small demo of
+Protosite in action.
+
+You can also browse to [the graphiql interface](http://localhost:3000/protosite/graphiql) to inspect the schema and to run
 test queries etc.
 
 
