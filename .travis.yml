@@ -9,7 +9,6 @@ env:
     - TRAVIS=true
     - DISPLAY=:99.0
 before_script:
-  - sh -e /etc/init.d/xvfb start
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build

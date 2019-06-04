@@ -1,6 +1,11 @@
 Protosite
 =========
 
+[![Build Status](https://travis-ci.org/jejacks0n/protosite.svg?branch=master)](https://travis-ci.org/jejacks0n/protosite)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
+
+
 Protosite is a CMA/CMS that's comprised of a client layer and an API layer that can be used together, or in their
 component parts.
 
