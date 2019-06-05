@@ -19,12 +19,8 @@ module Protosite
 
         def current_user
           @current_user ||= begin
-            if cookies.signed["protosite_user.id"]
-              user = Protosite::User.find_by(id: cookies.signed["protosite_user.id"])
-            end
-            user ||= request.env["warden"].authenticate
-            set_user_cookie(user) if user
-            user
+            user = request.env["warden"].authenticate
+            User.find(user["id"]) if user
           end
         end
 
@@ -40,11 +36,6 @@ module Protosite
         def serialized_user
           res = Protosite::Schema.run("currentUser {id, email, name, pack, permissions}", current_user: current_user)
           res.dig("data", "currentUser")
-        end
-
-        def set_user_cookie(user)
-          cookies.signed["protosite_user.id"] = user["id"]
-          cookies.signed["protosite_user.expires_at"] = Protosite.configuration.cookie_expiration
         end
     end
   end

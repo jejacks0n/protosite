@@ -5,6 +5,7 @@ module Protosite
     routes do
       root to: "/protosite#execute", via: [:post]
       match "/", to: "/protosite#login", via: [:get]
+      match "/", to: "/protosite#logout", via: [:delete]
     end
 
     initializer "protosite.helpers" do

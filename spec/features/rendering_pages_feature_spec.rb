@@ -47,22 +47,4 @@ describe "Rendering pages", type: :feature do
       expect(page).to_not have_content "Home"
     end
   end
-
-  it "renders the controls and toolbars if I'm an admin" do
-    login_as create(:user, admin: true)
-    visit "/"
-
-    expect(page).to have_content "Protosite Demo"
-    expect(page).to have_content "[global interface]"
-    expect(page).to have_content "[toolbar]"
-
-    within("section.content") do
-      expect(page).to have_content "Hero component"
-      expect(page).to have_content "[controls]"
-    end
-  end
-
-  it "allows me to update the home page properties"
-  it "retains versions of the content when I change it"
-  it "allows me to move pages from one parent to another"
 end

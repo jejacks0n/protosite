@@ -9,8 +9,6 @@ describe Protosite::Configuration do
 
   it "has the default configuration" do
     expect(subject.mount_at).to eq "/protosite"
-    expect(subject.cookie_expiration).to eq 30.minutes
-
     expect(subject.parent_controller).to eq "ActionController::Base"
     expect(subject.parent_record).to eq "ActiveRecord::Base"
     expect(subject.parent_connection).to eq "ActionCable::Connection::Base"

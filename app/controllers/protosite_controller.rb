@@ -12,8 +12,13 @@ class ProtositeController < Protosite.configuration.parent_controller.constantiz
   end
 
   def login
-    @current_user = request.env["warden"].authenticate!
+    request.env["warden"].authenticate!
     redirect_to "/"
+  end
+
+  def logout
+    request.env["warden"].logout
+    redirect_to "/", status: 401
   end
 
   private
