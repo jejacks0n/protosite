@@ -96,8 +96,8 @@ class Installer {
     Vue.component('protosite-page', opts.pageComponent)
 
     // Placeholder components.
-    Vue.component('protosite-toolbar', {render: () => ''})
-    Vue.component('protosite-controls', {render: () => ''})
+    Vue.component('protosite-page-toolbar', {render: () => ''})
+    Vue.component('protosite-component-toolbar', {render: () => ''})
   }
 
   installMixins() {

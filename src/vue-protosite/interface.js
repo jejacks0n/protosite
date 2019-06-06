@@ -1,26 +1,18 @@
-import {Toolbar, Controls} from './components/interface'
+import {GlobalToolbar, PageToolbar, ComponentToolbar} from './components/toolbars'
 
 export function Interface(Vue, opts) {
-  Vue.component('protosite-toolbar', Toolbar)
-  Vue.component('protosite-controls', Controls)
+  Vue.component('protosite-page-toolbar', PageToolbar)
+  Vue.component('protosite-component-toolbar', ComponentToolbar)
 
-  opts.logger('Rendering interface.')
+  opts.logger('Rendering toolbar interface.')
 
-  const Interface = Vue.extend({})
-  const instance = new Interface({
-    template: '<div>{{txt}}</div>',
-    data: function() {
-      return {
-        txt: '[global interface]',
-      }
-    },
-  })
-  instance.$mount()
-  if (typeof document !== 'undefined') document.querySelector('body').appendChild(instance.$el)
+  const instance = new (Vue.extend({}))(GlobalToolbar).$mount()
+  document.querySelector('body').appendChild(instance.$el)
 }
 
 export {
-  Toolbar,
-  Controls,
+  GlobalToolbar,
+  PageToolbar,
+  ComponentToolbar,
   // constants
 }

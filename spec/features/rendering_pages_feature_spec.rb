@@ -7,7 +7,7 @@ describe "Rendering pages", type: :feature do
       components: [
         {
           type: "hero",
-          title: "Hero component",
+          title: "Hero Component",
           text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at auctor tortor.",
           "link.url": "http://cnn.com",
           "link.text": "CNN.com",
@@ -15,7 +15,7 @@ describe "Rendering pages", type: :feature do
         }
       ],
       children: [
-        title: "About us",
+        title: "About Us",
       ]
     ])
   end
@@ -24,26 +24,26 @@ describe "Rendering pages", type: :feature do
     visit "/"
 
     expect(page).to have_content "Protosite Demo"
-    expect(page).to_not have_content "[global interface]"
+    expect(page).to_not have_content "[global toolbar]"
 
     within("nav") do
       expect(page).to have_content "Home"
-      expect(page).to have_content "About us"
+      expect(page).to have_content "About Us"
     end
 
     within("section.content") do
       expect(page).to have_content "Home"
-      expect(page).to have_content "Hero component"
+      expect(page).to have_content "Hero Component"
     end
   end
 
   it "allows navigating to other pages" do
     visit "/"
 
-    click_link("About us")
+    click_link("About Us")
 
     within("section.content") do
-      expect(page).to have_content "About us"
+      expect(page).to have_content "About Us"
       expect(page).to_not have_content "Home"
     end
   end

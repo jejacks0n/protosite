@@ -2,12 +2,12 @@
   <component ref="component" :is="resolve(protositePage, 'page')">
     <template slot="protosite" slot-scope="{schema}">
       <protosite-headful :title="protositePage.data.title" :description="protositePage.data.description || protositePage.data.title"/>
-      <protosite-toolbar :schema="schema" @persist="persist"/>
+      <protosite-page-toolbar :schema="schema" @persist="persist"/>
     </template>
     <template slot="components">
       <component v-for="component in protositePage.data.components" :key="component.id" :is="resolve(component, 'component')" :data="component">
         <template slot="protosite" slot-scope="{schema}">
-          <protosite-controls :schema="schema" :data="component" @persist="persist"/>
+          <protosite-component-toolbar :schema="schema" :data="component" @persist="persist"/>
         </template>
       </component>
     </template>
