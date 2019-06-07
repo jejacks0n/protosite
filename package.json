@@ -4,15 +4,16 @@
   "author": "jejacks0n",
   "description": "Protosite: An elegant and customizable vue based CMA",
   "license": "MIT",
-  "main": "src/vue-protosite/index.js",
+  "main": "vue-protosite/index.js",
   "files": [
-    "src/**/*"
+    "vue-protosite/**/*"
   ],
   "dependencies": {
     "@formschema/native": "^2.0.0-alpha.2",
     "apollo-boost": "^0.4.0",
     "graphql": "^14.3.1",
     "vue": ">=2.5",
+    "vue-form-json-schema": "^2.3.1",
     "vue-headful": ">=2.0.1",
     "vue-router": ">=3.0.1",
     "vuex": ">=3.0.1",

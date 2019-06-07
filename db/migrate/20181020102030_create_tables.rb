@@ -56,11 +56,21 @@ class CreateTables < ActiveRecord::Migration[5.2]
         components: [
           {
             type: "hero",
-            title: "Hero component",
-            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at auctor tortor.",
-            "link.url": "http://cnn.com",
-            "link.text": "CNN.com",
-            style: "default",
+            data: {
+              title: "Hero Component",
+              text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at auctor tortor.",
+              "link.url": "http://cnn.com",
+              "link.text": "CNN.com",
+              style: "default",
+            }
+          },
+          {
+            type: "hero",
+            data: {
+              title: "Another Hero",
+              text: "Bacon ipsum dolor amet fatback cupim cow pork chop.",
+              style: "fifty-fifty",
+            }
           }
         ],
         children: [

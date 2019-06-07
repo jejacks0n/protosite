@@ -1,7 +1,7 @@
 <template>
-  <article class="missing missing-component">
+  <article class="missing fallback-component">
     <div>
-      <strong>Missing Component {{data.type}}</strong>
+      <strong>Fallback Component {{data.type}}</strong>
     </div>
     <div class="data">{{JSON.stringify(data || '{}')}}</div>
     <slot name="protosite" :schema="schema"/>
@@ -29,7 +29,7 @@
 </script>
 
 <style scoped lang="scss">
-  article.missing-component {
+  article.fallback-component {
     background: #f00;
     border: 1px solid #000;
     outline: 1px solid #000;

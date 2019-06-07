@@ -1,27 +1,57 @@
 import {sync} from 'vuex-router-sync'
 
-import {Resolver, Missing, Headful, Page} from './components'
+import {Head, Page, Resolver, Fallback} from './components'
 import {STORE_MODULE, GRAPHQL_QUERIES, PAGE_PROPERTIES} from './store'
 import {Logger} from './logger'
 
 let Vue, config, opts, state
+let refTable = {}
 
 class Instance {
   constructor({store, router}) {
     this.store = store
     this.router = router
+    this.state = store.state.protosite
+    this.resolver = store.state.resolver
 
     if (store && router) sync(store, router)
   }
 
-  resolvePageFor(route) {
-    let meta = route.meta
-    let page = (meta && meta.page)
-    meta.page = page = (typeof page === 'string') ? opts.store.getters['protosite/findPage'](page) : page
+  resolve(object) {
+    if (!object) return 'div'
+    const [struct, type] = this.types(object)
+    object.id = object.id || this.reference(object)
+    return this.resolver[type] || this.resolver[`default-${struct}-type`] || this.fallback(struct)
+  }
 
-    const title = (page && page.data) ? page.data.title : null
-    opts.logger('Setting page:', title || 'Unknown', page)
-    opts.store.commit('protosite/page', page)
+  log(...messages) {
+    opts.logger(...messages)
+  }
+
+  types(object) {
+    return [
+      object.path !== undefined || object.parent !== undefined ? 'page' : 'component', // struct
+      object.type || (object.data ? object.data.type : 'default'), // declared type
+    ]
+  }
+
+  fallback(struct) {
+    return (struct === 'page' ? opts.pageComponent : opts.fallbackComponent)
+  }
+
+  reference(object) {
+    const key = JSON.stringify(object)
+    if (refTable[key]) return refTable[key]
+
+    const a = (Math.random() * 46656) | 0, b = (Math.random() * 46656) | 0
+    refTable[key] = ("000" + a.toString(36)).slice(-3) + ("000" + b.toString(36)).slice(-3)
+    return refTable[key]
+  }
+
+  setPage(source) {
+    let meta = source.meta || source
+    let page = (meta && meta.page) || meta
+    opts.store.commit('protosite/page', opts.store.getters['protosite/findPage'](page))
   }
 }
 
@@ -36,13 +66,17 @@ class Installer {
     opts = Object.assign({
       store: null, // required
       router: null, // recommended
-      resolverComponent: Resolver,
-      pageComponent: Page,
-      missingComponent: Missing,
-      missingPage: null,
+
+      // Customize behavior.
       storeModule: STORE_MODULE,
       logger: Logger.log,
-      resolver: null,
+      catchAllRoute: {path: '*', meta: {page: 'error_404'}},
+
+      // Customize components.
+      headComponent: Head,
+      pageComponent: Page,
+      resolverComponent: Resolver,
+      fallbackComponent: Fallback,
     }, config, options)
 
     // Ensure required options are present.
@@ -56,21 +90,21 @@ class Installer {
     state.data = state.data || {}
     state.data.currentUser = state.data.currentUser || null
 
-    // Instantiate the protosite instance (with limited access to objects) and
-    // provide access to it via this.$protosite within components.
-    this.instance = new Instance({store: opts.store, router: opts.router})
-    Vue.prototype['$protosite'] = this.instance
-
     // Default more complex options.
-    if (opts.missingPage === null) { // if no a catchall, use `false`.
-      opts.missingPage = {path: '*', component: opts.resolverComponent, meta: {page: opts.missingPage}}
+    if (opts.catchAllRoute && !opts.catchAllRoute.component) {
+      opts.catchAllRoute.component = opts.resolverComponent
     }
 
     // Install Protosite at various levels.
     this.installToStore()
     this.installComponents()
-    this.installInterface()
     this.installMixins()
+    this.installInterface()
+
+    // Instantiate the protosite instance (with limited access to objects) and
+    // provide access to it via this.$protosite within components.
+    this.instance = new Instance({store: opts.store, router: opts.router})
+    Vue.prototype['$protosite'] = this.instance
   }
 
   installToStore() {
@@ -91,11 +125,13 @@ class Installer {
     opts.logger('Adding components for rendering.')
 
     // Rendering components.
-    Vue.component('protosite-headful', Headful)
-    Vue.component('protosite-resolver', opts.resolverComponent)
+    Vue.component('protosite-head', opts.headComponent)
     Vue.component('protosite-page', opts.pageComponent)
+    Vue.component('protosite-resolver', opts.resolverComponent)
+    Vue.component('protosite-fallback', opts.fallbackComponent)
 
     // Placeholder components.
+    Vue.component('protosite-global-toolbar', {render: () => ''})
     Vue.component('protosite-page-toolbar', {render: () => ''})
     Vue.component('protosite-component-toolbar', {render: () => ''})
   }
@@ -105,37 +141,12 @@ class Installer {
 
     Vue.mixin({
       computed: {
-        protositeLoading: {
-          get() {
-            return state.protosite.loading
-          },
+        currentUser: {
+          get: () => state.protosite.currentUser,
         },
-        protositePages: {
-          get() {
-            return state.protosite.pages
-          },
-        },
-        protositePage: {
-          get() {
-            return state.protosite.page
-          },
-          set(value) {
-            return opts.store.commit('page', value, {module: 'protosite'})
-          },
-        },
-        protositeHome: {
-          get() {
-            return opts.store.getters['protosite/findPage']('home')
-          },
-        },
-      },
-      methods: {
-        resolve(object, objectType) {
-          if (!object) return 'div'
-          const type = object.type || (object.data ? object.data.type : null)
-          const resolver = opts.resolver || state.resolver
-          const fallback = (objectType === 'page') ? opts.pageComponent : opts.missingComponent
-          return resolver[type] || resolver[`default-${objectType}-type`] || fallback
+        page: {
+          get: () => state.protosite.page,
+          set: (value) => opts.store.commit('page', value, {module: 'protosite'}),
         },
       },
     })
@@ -145,19 +156,12 @@ class Installer {
     opts.store.dispatch('protosite/resolveCurrentUser', state.data).then(() => {
       const pack = state.protosite.currentUser ? state.protosite.currentUser.pack : null
       if (pack) {
-        opts.logger('Installing Protosite interface.')
-
-        if (opts.interface) {
-          opts.interface(Vue, opts)
-        } else if (typeof document !== 'undefined') {
-          var s = document.createElement('script')
-          s.type = 'text/javascript'
-          s.onload = () => {
-            Protosite(Vue, opts)
-            opts.store.dispatch('protosite/resolved', 'interface')
-          }
-          s.src = pack
-          document.head.appendChild(s)
+        if (typeof document !== 'undefined') {
+          var script = document.createElement('script')
+          script.onload = () => Protosite(Vue, opts)
+          script.type = 'text/javascript'
+          script.src = pack
+          document.head.appendChild(script)
         }
       } else {
         opts.store.dispatch('protosite/resolved', 'interface')
@@ -170,18 +174,18 @@ class Installer {
       opts.logger('Building and adding routes.')
 
       let routes = this.buildRoutesFor(state.protosite.pages)
-      if (opts.missingPage) routes.push(opts.missingPage)
+      if (opts.catchAllRoute) routes.push(opts.catchAllRoute)
 
       opts.router.addRoutes(routes)
 
       opts.router.beforeEach((to, from, next) => {
-        this.instance.resolvePageFor(to)
+        this.instance.setPage(to)
         next()
       })
 
       opts.router.onReady(() => {
         if (!state.data.pages) { // force resolving the page for the initial load
-          this.instance.resolvePageFor(opts.router.app.$route || opts.router.history.current)
+          this.instance.setPage(opts.router.app.$route || opts.router.history.current)
         }
       })
     }
@@ -207,17 +211,17 @@ class Installer {
   }
 }
 
-Installer.Resolver = Resolver
-Installer.Page = Page
-Installer.Headful = Headful
-
 export default Installer
 export {
   Instance,
-  Resolver,
+
+  // Components.
+  Head,
   Page,
-  Headful,
-  // constants
+  Resolver,
+  Fallback,
+
+  // Constants.
   STORE_MODULE,
   GRAPHQL_QUERIES,
   PAGE_PROPERTIES,

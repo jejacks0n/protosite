@@ -45,12 +45,12 @@ const store = new Vuex.Store({
 // Setup the router. Protosite will optionally add in all routes for the page
 // hierarchy if a router is provided. Handling would need to be implemented on
 // your own if you don't include the router. Protosite adds a catch all route
-// that handles 404s by rendering the error_404 page.
+// that handles 404s by rendering the error_404 page by default.
 const router = new VueRouter({mode: 'history', fallback: false})
 
 // Setup Protosite. Protosite requires the Vuex store and for the store to have
-// a resolver object and optionally some page data (to avoid a round trip to the
-// api on initial load).
+// a resolver object and optionally some data (to avoid a round trip to the api
+// on initial load).
 //
 // If a user is signed in with the correct access privileges, the protosite.js
 // pack will be loaded and presented to the user. The Protosite interface can

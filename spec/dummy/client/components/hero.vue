@@ -13,6 +13,14 @@
     data() {
       return {schema}
     },
+    methods: {
+      beforePersist(object) {
+        console.log('beforePersist', object)
+      },
+      persist(object) {
+        console.log('persist', object)
+      },
+    }
   }
 
   const schema = {
@@ -48,6 +56,19 @@
         },
       },
     },
+    ui: [
+      {
+        component: 'input',
+        model: 'title',
+        fieldOptions: {
+          class: ['form-control'],
+          on: ['input'],
+          attrs: {
+            placeholder: 'Enter the hero title here',
+          },
+        },
+      },
+    ]
   }
 </script>
 

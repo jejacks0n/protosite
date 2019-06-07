@@ -988,7 +988,7 @@ ajv-keywords@^3.1.0:
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.4.0.tgz#4b831e7b531415a7cc518cd404e73f6193c6349d"
   integrity sha512-aUjdRFISbuFOl0EIZc+9e4FfZp0bDZgAdOOf30bJmw8VM9v84SHyVyxDfbWxpGYbdZD/9XoKxfHVNmxPkhwyGw==
 
-ajv@^6.1.0, ajv@^6.5.5, ajv@^6.9.1:
+ajv@^6.1.0, ajv@^6.5.5, ajv@^6.6.2, ajv@^6.9.1:
   version "6.10.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.10.0.tgz#90d0d54439da587cd7e843bfb7045f50bd22bdf1"
   integrity sha512-nffhOpkymDECQyR0mnsUtoCE8RlX38G0rYP+wgLWFyZuUyuuojSSvi/+euOiQBIn63whYwYVIIH1TvE3tu4OEg==
@@ -4442,6 +4442,11 @@ mini-css-extract-plugin@^0.7.0:
     schema-utils "^1.0.0"
     webpack-sources "^1.1.0"
 
+minibus@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/minibus/-/minibus-3.1.0.tgz#fd429ed975a3fd4e556f0c6e9aac9a4eacbcd193"
+  integrity sha1-/UKe2XWj/U5VbwxumqyaTqy80ZM=
+
 minimalistic-assert@^1.0.0, minimalistic-assert@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/minimalistic-assert/-/minimalistic-assert-1.0.1.tgz#2e194de044626d4a10e7f7fbc00ce73e83e4d5c7"
@@ -7394,6 +7399,15 @@ vm-browserify@0.0.4:
   integrity sha1-XX6kW7755Kb/ZflUOOCofDV9WnM=
   dependencies:
     indexof "0.0.1"
+
+vue-form-json-schema@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/vue-form-json-schema/-/vue-form-json-schema-2.3.1.tgz#eb0f93edd9b985a1cc6ec3598ff37f1b1dac46d1"
+  integrity sha512-L7QDiJWkkgwpjZ4gk+b8Y8C6Wb7ArpI1PJQfGon6gs59IH/ZrsTBhE0/PYREIfjzx1WuB2thNbUJG8CnAT3/DA==
+  dependencies:
+    ajv "^6.6.2"
+    lodash "^4.17.11"
+    minibus "^3.1.0"
 
 vue-headful@>=2.0.1:
   version "2.0.1"

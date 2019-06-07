@@ -1,15 +1,13 @@
 import ApolloClient from 'apollo-boost'
 import gql from 'graphql-tag'
+
 import {Logger} from './logger'
 
 const client = new ApolloClient({uri: '/protosite'})
-const flatten = (pages) => pages.reduce((acc, page) => acc.concat(flatten(page.pages || [])), pages)
-const resolveApi = (commit, data, prop) => {
-  if (data && data[prop]) return commit(prop, data[prop])
-  return client.query({query: GRAPHQL_QUERIES[prop]})
-    .then(({data}) => commit(prop, data[prop]))
-    .catch((error) => Logger.error(error))
-}
+
+const flatten = (pages) => pages.reduce((acc, p) => acc.concat(flatten(p.pages || [])), pages)
+const query = (query, r) => client.query({query: query}).then(({data}) => r(data)).catch((e) => Logger.error(e))
+const resolve = (commit, d, p) => (d && d[p]) ? commit(p, d[p]) : query(GRAPHQL_QUERIES[p], (d) => commit(p, d[p]))
 
 export const GRAPHQL_QUERIES = {
   currentUser: gql`
@@ -23,6 +21,8 @@ export const GRAPHQL_QUERIES = {
 }
 
 let resolvedItems = []
+let flattenedPages = []
+
 export const STORE_MODULE = {
   namespaced: true,
   state: {
@@ -30,17 +30,16 @@ export const STORE_MODULE = {
     currentUser: null,
     page: null,
     pages: [],
-    pagesFlat: [],
   },
   actions: {
     async resolveCurrentUser({commit, dispatch}, data) {
       if (data.currentUser !== null) { // don't check if not needed
-        await resolveApi(commit, data, 'currentUser')
+        await resolve(commit, data, 'currentUser')
       }
       dispatch('resolved', 'currentUser')
     },
     async resolvePages({commit, dispatch}, data) {
-      await resolveApi(commit, data, 'pages')
+      await resolve(commit, data, 'pages')
       dispatch('resolved', 'pages')
     },
     resolved({commit}, resolution) {
@@ -60,13 +59,11 @@ export const STORE_MODULE = {
     },
     pages(state, pages) {
       state.pages = pages
-      state.pagesFlat = flatten(pages)
+      flattenedPages = flatten(pages)
     },
   },
   getters: {
-    findPage(state) {
-      return (id) => state.pagesFlat.find(page => page.id === id)
-    },
+    findPage: () => (id) => (typeof id === 'string') ? flattenedPages.find(p => p.id === id) : id
   },
 }
 
@@ -79,9 +76,9 @@ export const PAGE_PROPERTIES = {
   slug: {
     type: 'string',
     title: 'Slug title',
-    help: 'The slug will determine the path at which this page is accessible. Leave blank to default from the title. Allowed characters are letters, numbers and dashes.',
+    help: 'The slug will determine the path at which this page is accessible. Leave blank to default from the title.',
     maxLength: 100,
-    pattern: '[0-9A-Za-z-]',
+    pattern: '[0-9A-Za-z-]?',
   },
   description: {
     type: 'string',

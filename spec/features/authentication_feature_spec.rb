@@ -8,11 +8,13 @@ describe "Authentication", type: :feature do
       components: [
         {
           type: "hero",
-          title: "Hero Component",
-          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at auctor tortor.",
-          "link.url": "http://cnn.com",
-          "link.text": "CNN.com",
-          style: "default",
+          data: {
+            title: "Hero Component",
+            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at auctor tortor.",
+            "link.url": "http://cnn.com",
+            "link.text": "CNN.com",
+            style: "default",
+          }
         }
       ],
     ])

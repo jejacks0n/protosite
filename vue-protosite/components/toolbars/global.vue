@@ -6,8 +6,9 @@
 </template>
 
 <script>
-  // The global toolbar understands things about authentication, the user, and
-  // will eventually manage graphql subscriptions (when that makes sense).
+  // The global toolbar understands general authentication aspects, the current
+  // user, manages graphql subscriptions and site wide configuration and custom
+  // object management (like product management for instance).
 
   export default {
     name: 'GlobalToolbar',
