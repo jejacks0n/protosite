@@ -67,10 +67,10 @@ class Interface {
   }
 
   promptOnAbandon() {
-    window.addEventListener('beforeunload', (e) => {
-      e.preventDefault()
-      e.returnValue = ''
-    })
+    // window.addEventListener('beforeunload', (e) => {
+    //   e.preventDefault()
+    //   e.returnValue = ''
+    // })
   }
 
   injectInterface() {
