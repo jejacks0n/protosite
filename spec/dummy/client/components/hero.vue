@@ -20,7 +20,7 @@
       persist(object) {
         console.log('persist', object)
       },
-    }
+    },
   }
 
   const schema = {
@@ -30,45 +30,30 @@
       title: {
         type: 'string',
         title: 'Title',
-        default: 'Default title',
-        minLength: 8,
         maxLength: 20,
-        attrs: {
-          placeholder: 'Enter the hero title here',
+        ui: {
+          default: 'Default title',
+          prompt: 'Enter the hero title here',
         },
       },
       text: {
         type: 'string',
         title: 'Text',
         maxLength: 800,
-        attrs: {
-          type: 'textarea',
+        ui: {
+          component: 'textarea',
         },
       },
       style: {
         type: 'string',
         title: 'Style',
-        default: 'default',
         enum: ['default', 'fifty-fifty'],
-        attrs: {
-          // placeholder: 'Select a style...',
-          type: 'radio',
+        ui: {
+          default: 'default',
+          prompt: 'Select a style...',
         },
       },
     },
-    ui: [
-      {
-        component: 'input',
-        model: 'title',
-        fieldOptions: {
-          class: ['form-control'],
-          on: ['input'],
-          attrs: {
-            placeholder: 'Enter the hero title here',
-          },
-        },
-      },
-    ]
   }
 </script>
 

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import {PAGE_PROPERTIES} from "@protosite/vue-protosite"
+  import {PAGE_SCHEMA, defaultsDeep} from "@protosite/vue-protosite"
 
   export default {
     name: 'Home',
@@ -24,30 +24,18 @@
     },
   }
 
-  const schema = {
+  const schema = defaultsDeep(PAGE_SCHEMA, {
     type: 'object',
     required: ['title'],
-    properties: Object.assign(PAGE_PROPERTIES, {
+    properties: {
       color: {
         type: 'string',
         title: 'Color',
+        default: '#efefef',
         attrs: {
           type: 'color',
         },
       },
-    }),
-    ui: [
-      {
-        component: 'input',
-        model: 'title',
-        fieldOptions: {
-          class: ['form-control'],
-          on: ['input'],
-          attrs: {
-            placeholder: 'Enter the page title here',
-          },
-        },
-      }
-    ]
-  }
+    },
+  })
 </script>

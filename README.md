@@ -15,8 +15,9 @@ The API layer is built with Rails and GraphQL, and the client layer is built usi
 
 Protosite has a core concept of that by defining the shape of all data we can provide standard tooling to manipulate
 and present that data. Which in practical terms manifests by simply using JSON Schema to define all CMSable component
-data. We can define validation rules, input style (checkboxes vs. multi select for instance), and any number of
-additional attributes to enable expressive ways to collect data from content teams.
+data. We can define validation rules, input style (checkboxes vs. multi select for instance), use custom components for
+any of the input types, and provide any number of additional attributes to enable expressive ways to collect data from
+content teams.
 
 Further, and maybe more importantly, the schema is useful in keeping code and data inline and versioned. If data doesn't
 match the schema of the component trying to present it (for instance if the component has been updated with new

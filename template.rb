@@ -148,7 +148,7 @@ after_bundle do
     </template>
 
     <script>
-      import {PAGE_PROPERTIES} from "@protosite/vue-protosite"
+      import {PAGE_SCHEMA} from "@protosite/vue-protosite"
 
       export default {
         name: 'Home',
@@ -164,7 +164,7 @@ after_bundle do
       const schema = {
         type: 'object',
         required: ['title'],
-        properties: Object.assign(PAGE_PROPERTIES, {
+        properties: Object.assign(PAGE_SCHEMA, {
           color: {
             type: 'string',
             title: 'Color',
