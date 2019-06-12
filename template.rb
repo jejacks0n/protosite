@@ -23,15 +23,15 @@ after_bundle do
 
   say "Adding Protosite boiler plate code"
   file "app/javascript/packs/protosite.js", <<-JAVASCRIPT.strip_heredoc
-    import {Interface as Protosite} from '@protosite/vue-protosite/src/vue-protosite/interface'
+    import Interface from '@protosite/vue-protosite/vue-protosite/interface'
 
     // You can configure the Protosite interface here and override functionality of
     // any of the base components if you'd like. The Protosite interface exposes
     // most of itself for the express purpose of being extensible and flexible.
 
-    // Finally, we expose this so Protosite core can instantiate it and give us our
-    // CMA interface.
-    window.Protosite = Protosite
+    // Finally, we install the interface with our configuration options.
+    window.Protosite = Interface.install({
+    })
   JAVASCRIPT
 
   append_to_file "app/javascript/packs/application.js", <<-JAVASCRIPT.strip_heredoc
@@ -82,16 +82,12 @@ after_bundle do
     // Setup the router. Protosite will optionally add in all routes for the page
     // hierarchy if a router is provided. Handling would need to be implemented on
     // your own if you don't include the router. Protosite adds a catch all route
-    // that handles 404s (the error_404 page by default).
-    const router = new VueRouter({
-      mode: 'history',
-      fallback: false,
-      routes: [],
-    })
+    // that handles 404s by rendering the error_404 page by default.
+    const router = new VueRouter({mode: 'history', fallback: false})
 
-    // Setup protosite. Protosite requires the vuex store and for the store to have
+    // Setup Protosite. Protosite requires the Vuex store and for the store to have
     // a resolver object and optionally some data (to avoid a round trip to the api
-    // on initial load.)
+    // on initial load).
     //
     // If a user is signed in with the correct access privileges, the protosite.js
     // pack will be loaded and presented to the user. The Protosite interface can
@@ -106,15 +102,15 @@ after_bundle do
 
   file "app/javascript/views/app.vue", <<-VUE.strip_heredoc
     <template>
-      <section v-if="protositeLoading" class="loading">loading...</section>
+      <section v-if="$protosite.state.loading" class="loading">loading...</section>
       <section v-else class="application">
         <h1>Protosite Demo</h1>
         <nav>
-          <navigation :pages="protositePages" depth="5"/>
+          <navigation :pages="$protosite.state.pages" depth="5"/>
         </nav>
         <section class="content">
           <transition name="page">
-            <router-view :key="protositePage.slug"/>
+            <router-view :key="page.slug"/>
           </transition>
         </section>
       </section>
@@ -133,14 +129,14 @@ after_bundle do
   file "app/javascript/views/home.vue", <<-VUE.strip_heredoc
     <template>
       <section class="home">
-        <h1>{{protositePage.title}}</h1>
-        <div :style="{backgroundColor: protositePage.data.color}">
+        <h1>{{page.data.title}}</h1>
+        <div :style="{backgroundColor: page.data.color}">
           <h2>here's some custom content for the home page</h2>
           <slot name="components"/>
         </div>
-        <h1>{{protositePage.title}}</h1>
+        <slot name="protosite" :schema="schema"/>
         <ul>
-          <li v-for="page in protositePage.pages" :key="page.id">
+          <li v-for="page in page.pages" :key="page.id">
             <router-link :to="page.path">{{page.data.title}} - {{page.description || 'No description'}}</router-link>
           </li>
         </ul>
@@ -148,32 +144,29 @@ after_bundle do
     </template>
 
     <script>
-      import {PAGE_SCHEMA} from "@protosite/vue-protosite"
+      import {PAGE_SCHEMA, defaultsDeep} from "@protosite/vue-protosite"
 
       export default {
         name: 'Home',
         data() {
           return {schema}
         },
-        methods: {
-          // You can add custom persistence logic for your page
-          //persistPage() {},
-        },
       }
 
-      const schema = {
+      const schema = defaultsDeep(PAGE_SCHEMA, {
         type: 'object',
         required: ['title'],
-        properties: Object.assign(PAGE_SCHEMA, {
+        properties: {
           color: {
             type: 'string',
             title: 'Color',
+            default: '#efefef',
             attrs: {
               type: 'color',
             },
           },
-        }),
-      }
+        },
+      })
     </script>
   VUE
 
@@ -193,6 +186,14 @@ after_bundle do
         data() {
           return {schema}
         },
+        methods: {
+          beforePersist(object) {
+            console.log('beforePersist', object)
+          },
+          persist(object) {
+            console.log('persist', object)
+          },
+        },
       }
 
       const schema = {
@@ -202,29 +203,27 @@ after_bundle do
           title: {
             type: 'string',
             title: 'Title',
-            default: 'Default title',
-            minLength: 8,
             maxLength: 20,
-            attrs: {
-              placeholder: 'Enter the hero title here',
+            ui: {
+              default: 'Default title',
+              prompt: 'Enter the hero title here',
             },
           },
           text: {
             type: 'string',
             title: 'Text',
             maxLength: 800,
-            attrs: {
-              type: 'textarea',
+            ui: {
+              component: 'textarea',
             },
           },
           style: {
             type: 'string',
             title: 'Style',
-            default: 'default',
             enum: ['default', 'fifty-fifty'],
-            attrs: {
-              // placeholder: 'Select a style...',
-              type: 'radio',
+            ui: {
+              default: 'default',
+              prompt: 'Select a style...',
             },
           },
         },
