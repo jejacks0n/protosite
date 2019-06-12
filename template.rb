@@ -267,5 +267,8 @@ after_bundle do
   rails_command "protosite:install:migrations"
   rails_command "db:migrate"
 
+  route %Q{root to: "protosite#app"}
+  route %Q{get "*path", to: "protosite#app", constraints: Proc.new { |req| ["text/html", "*/*"].include?(req.format.to_s) }}
+
   say "Protosite is now installed 🎉", :green
 end
