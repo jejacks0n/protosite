@@ -1,7 +1,8 @@
 import {sync} from 'vuex-router-sync'
+import {defaultsDeep} from 'lodash'
 
 import {Head, Page, Resolver, Fallback} from './components'
-import {STORE_MODULE, GRAPHQL_QUERIES, PAGE_PROPERTIES} from './store'
+import {STORE_MODULE, GRAPHQL_QUERIES, PAGE_SCHEMA} from './store'
 import {Logger} from './logger'
 
 let Vue, config, opts, state
@@ -28,6 +29,14 @@ class Instance {
     opts.logger(...messages)
   }
 
+  defaultValues(object, schema) {
+    for (let [key, property] of Object.entries(schema.properties || {})) {
+      if (property.default) object[key] = object[key] || property.default
+      if (property.type === 'object') this.defaults(object, property)
+    }
+    return object
+  }
+
   types(object) {
     return [
       object.path !== undefined || object.parent !== undefined ? 'page' : 'component', // struct
@@ -46,6 +55,15 @@ class Instance {
     const a = (Math.random() * 46656) | 0, b = (Math.random() * 46656) | 0
     refTable[key] = ("000" + a.toString(36)).slice(-3) + ("000" + b.toString(36)).slice(-3)
     return refTable[key]
+  }
+
+  schemas(schema) {
+    schema = JSON.parse(JSON.stringify(schema)) // schema should be a clean and raw object
+    return {object: schema, ui: this.extractUIFromSchema(schema)}
+  }
+
+  extractUIFromSchema(_schema) {
+    return []
   }
 
   setPage(source) {
@@ -79,6 +97,11 @@ class Installer {
       fallbackComponent: Fallback,
     }, config, options)
 
+    // Default more complex options.
+    if (opts.catchAllRoute && !opts.catchAllRoute.component) {
+      opts.catchAllRoute.component = opts.resolverComponent
+    }
+
     // Ensure required options are present.
     if (!opts.store) {
       Logger.error('You must provide a store.')
@@ -89,11 +112,6 @@ class Installer {
     state = opts.store.state
     state.data = state.data || {}
     state.data.currentUser = state.data.currentUser || null
-
-    // Default more complex options.
-    if (opts.catchAllRoute && !opts.catchAllRoute.component) {
-      opts.catchAllRoute.component = opts.resolverComponent
-    }
 
     // Install Protosite at various levels.
     this.installToStore()
@@ -213,7 +231,9 @@ class Installer {
 
 export default Installer
 export {
+  // Utility
   Instance,
+  defaultsDeep,
 
   // Components.
   Head,
@@ -224,5 +244,5 @@ export {
   // Constants.
   STORE_MODULE,
   GRAPHQL_QUERIES,
-  PAGE_PROPERTIES,
+  PAGE_SCHEMA,
 }

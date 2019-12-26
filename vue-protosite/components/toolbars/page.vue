@@ -3,7 +3,7 @@
     [page toolbar]
     <button @click.prevent="onToggleEditing">edit</button>
     <form v-if="editing" novalidate @submit.prevent.stop="onSubmitted">
-      <protosite-page-form v-model="data" :schema="schema" :ui-schema="uiFromSchema()" :options="options" @state-change="onStateChanged" @validated="onValidated"/>
+      <protosite-form v-model="model" :schema="schemas.object" :ui-schema="schemas.ui" :options="options" @validated="onValidated"/>
       <button type="submit">Submit</button>
     </form>
   </section>
@@ -19,7 +19,7 @@
     props: ['value', 'schema'],
     data() {
       return {
-        data: this.value,
+        model: this.$protosite.defaultValues(this.value, this.schema),
         editing: false,
         valid: false,
         submitted: false,
@@ -27,6 +27,9 @@
       }
     },
     computed: {
+      schemas() {
+        return this.$protosite.schemas(this.schema)
+      },
       options() {
         return {
           castToSchemaType: true,
@@ -35,25 +38,17 @@
       },
     },
     watch: {
-      data(data) {
-        this.$emit('input', data)
+      model(value) {
+        this.$emit('input', value)
       },
     },
     methods: {
-      uiFromSchema() {
-        // TODO: build out the default protosite form ui logic
-        return this.schema.ui
-      },
-
       onToggleEditing() {
         this.editing = !this.editing
       },
-      onStateChanged(value) {
-        console.log('onStateChanged', value)
-      },
       onValidated(value) {
         this.valid = value
-        console.log('onValidated', value)
+        console.log('valid', value)
       },
       onSubmitted() {
         this.submitted = true

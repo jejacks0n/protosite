@@ -52,7 +52,7 @@ class CreateTables < ActiveRecord::Migration[5.2]
         title: "Home Page",
         slug: "", # we can leave this blank for the home page
         type: "home-page", # we want home to use a special template
-        color: "#eee", # our custom home template can handle color!
+        color: "#efefef", # our custom home template can handle color!
         components: [
           {
             type: "hero",

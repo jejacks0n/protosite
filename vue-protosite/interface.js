@@ -1,31 +1,47 @@
-import VueFormJsonSchema from 'vue-form-json-schema';
+import VueFormJsonSchema from 'vue-form-json-schema'
 
 import {GlobalToolbar, PageToolbar, ComponentToolbar} from './components/toolbars'
 
-function Interface(Vue, options) {
-  Installer.install(Vue, options)
-  return new Installer(options)
-}
+import {SchemaProcessor, UISCHEMA_DEFAULTS} from './schema'
+import {Logger} from "./logger"
 
 let Vue, config, opts
 
-class Installer {
-  static install(V, c = {}) {
-    c.logger('Installing Protosite interface.')
-    Vue = V
+class Interface {
+  static install(c = {}) {
     config = c
+    return (...args) => new Interface(...args)
   }
 
-  constructor(options) {
+  constructor(V, options) {
+    Vue = V
     opts = Object.assign({
+      // Customize behavior.
+      schemaProcessor: null,
+      schemaTypeDefaults: UISCHEMA_DEFAULTS,
+
+      // Customize toolbar components.
       globalToolbarComponent: GlobalToolbar,
       pageToolbarComponent: PageToolbar,
       componentToolbarComponent: ComponentToolbar,
+
+      // Customize input components.
+      // inputComponent: Input,
     }, config, options)
+
+    // Default more complex options.
+    opts.schemaProcessor = opts.schemaProcessor || new SchemaProcessor(opts.schemaTypeDefaults)
+
+    // Ensure required options are present.
+    if (!opts.schemaProcessor || !opts.schemaProcessor.process) {
+      Logger.error('You must provide a valid schemaProcessor.')
+      throw new Error('Protosite: Unable to use provided schemaProcessor')
+    }
 
     // Install Protosite at various levels.
     this.installComponents()
-    this.installMixins()
+    this.extendProtosite()
+    this.promptOnAbandon()
 
     // Put the global toolbar on the page.
     this.injectInterface()
@@ -39,12 +55,22 @@ class Installer {
     Vue.component('protosite-page-toolbar', opts.pageToolbarComponent)
     Vue.component('protosite-component-toolbar', opts.componentToolbarComponent)
 
-    Vue.component('protosite-component-form', VueFormJsonSchema);
-    Vue.component('protosite-page-form', VueFormJsonSchema);
+    Vue.component('protosite-form', VueFormJsonSchema)
   }
 
-  installMixins() {
-    Vue.mixin({})
+  extendProtosite() {
+    Object.assign(Vue.prototype.$protosite, {
+      extractUIFromSchema(schema) {
+        return opts.schemaProcessor.process(schema)
+      },
+    })
+  }
+
+  promptOnAbandon() {
+    // window.addEventListener('beforeunload', (e) => {
+    //   e.preventDefault()
+    //   e.returnValue = ''
+    // })
   }
 
   injectInterface() {
@@ -53,14 +79,16 @@ class Installer {
   }
 }
 
-export default Installer
+export default Interface
 export {
-  Interface,
-
   // Components.
   GlobalToolbar,
   PageToolbar,
   ComponentToolbar,
 
+  // Utility.
+  SchemaProcessor,
+
   // Constants.
+  UISCHEMA_DEFAULTS,
 }

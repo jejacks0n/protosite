@@ -9,17 +9,6 @@ const flatten = (pages) => pages.reduce((acc, p) => acc.concat(flatten(p.pages |
 const query = (query, r) => client.query({query: query}).then(({data}) => r(data)).catch((e) => Logger.error(e))
 const resolve = (commit, d, p) => (d && d[p]) ? commit(p, d[p]) : query(GRAPHQL_QUERIES[p], (d) => commit(p, d[p]))
 
-export const GRAPHQL_QUERIES = {
-  currentUser: gql`
-    query CurrentUser {
-      currentUser {id, email, name, pack, permissions}
-    }`,
-  pages: gql`
-    query Pages {
-      pages {id, slug, data, pages {id, slug, data, pages {id, slug, data, pages {id, slug, data, pages {id, slug, data}}}}}
-    }`,
-}
-
 let resolvedItems = []
 let flattenedPages = []
 
@@ -63,29 +52,46 @@ export const STORE_MODULE = {
     },
   },
   getters: {
-    findPage: () => (id) => (typeof id === 'string') ? flattenedPages.find(p => p.id === id) : id
+    findPage: () => (id) => (typeof id === 'string') ? flattenedPages.find(p => p.id === id) : id,
   },
 }
 
-export const PAGE_PROPERTIES = {
-  title: {
-    type: 'string',
-    title: 'Page title',
-    maxLength: 50,
-  },
-  slug: {
-    type: 'string',
-    title: 'Slug title',
-    help: 'The slug will determine the path at which this page is accessible. Leave blank to default from the title.',
-    maxLength: 100,
-    pattern: '[0-9A-Za-z-]?',
-  },
-  description: {
-    type: 'string',
-    title: 'Meta description',
-    maxLength: 800,
-    attrs: {
-      type: 'textarea',
+export const GRAPHQL_QUERIES = {
+  currentUser: gql`
+    query CurrentUser {
+      currentUser {id, email, name, pack, permissions}
+    }`,
+  pages: gql`
+    query Pages {
+      pages {id, slug, data, pages {id, slug, data, pages {id, slug, data, pages {id, slug, data, pages {id, slug, data}}}}}
+    }`,
+}
+
+export const PAGE_SCHEMA = {
+  type: 'object',
+  required: ['title'],
+  properties: {
+    title: {
+      type: 'string',
+      title: 'Page title',
+      maxLength: 50,
+    },
+    slug: {
+      type: 'string',
+      title: 'Slug title',
+      maxLength: 100,
+      pattern: '[0-9A-Za-z-]?',
+      ui: {
+        help: 'The slug is the path at which this page will be accessible. Leave blank to default it from the title.',
+      },
+    },
+    description: {
+      type: 'string',
+      title: 'Meta description',
+      maxLength: 800,
+      ui: {
+        component: 'textarea',
+      },
     },
   },
 }

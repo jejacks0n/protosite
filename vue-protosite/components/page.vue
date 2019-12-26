@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import {PAGE_PROPERTIES} from "../store"
+  import {PAGE_SCHEMA as schema} from '../store'
 
   export default {
     name: 'Page',
@@ -15,24 +15,5 @@
     data() {
       return {schema}
     },
-  }
-
-  const schema = {
-    type: 'object',
-    required: ['title'],
-    properties: PAGE_PROPERTIES,
-    ui: [
-      {
-        component: 'input',
-        model: 'title',
-        fieldOptions: {
-          class: ['form-control'],
-          on: ['input'],
-          attrs: {
-            placeholder: 'Enter the page title here',
-          },
-        },
-      },
-    ]
   }
 </script>
