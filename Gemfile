@@ -10,7 +10,7 @@ group :development, :test do
   gem "rubocop-rails_config"
 
   # dummy app
-  gem "puma", "~> 3.11"
+  gem "puma", "~> 5.3"
   gem "sqlite3"
   gem "slim-rails"
   gem "sassc-rails"
